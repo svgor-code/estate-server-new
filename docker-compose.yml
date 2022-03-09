@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  node:
+    build:
+      context: .
+    env_file: ./.env
+    restart: unless-stopped
+    volumes:
+      - .:/app/
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - mongo
+    environment:
+      - PORT=${PORT}
+      - MONGO_HOST=mongo
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_DB=${MONGO_DB}
+      - TG_TOKEN=${TG_TOKEN}
+      - TG_CHAT_ID=${TG_CHAT_ID}
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    volumes:
+      - ~/apps/mongo:/data/db
