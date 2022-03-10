@@ -15,7 +15,7 @@ services:
       - mongo
     environment:
       - PORT=${PORT}
-      - MONGO_HOST=mongo
+      - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
       - MONGO_DB=${MONGO_DB}
       - TG_TOKEN=${TG_TOKEN}
