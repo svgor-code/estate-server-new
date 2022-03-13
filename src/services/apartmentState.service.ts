@@ -1,0 +1,30 @@
+import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  ApartmentState,
+  ApartmentStateDocument,
+} from 'src/schemas/apartmentState.schema';
+import { CreateApartmentStateDto } from 'src/dto/apartmentState/CreateApartmentStateDto';
+
+@Injectable()
+export class ApartmentStateService {
+  constructor(
+    @InjectModel(ApartmentState.name)
+    private apartmentStateModel: Model<ApartmentStateDocument>,
+  ) {}
+
+  async create(
+    createApartmentStateDto: CreateApartmentStateDto,
+  ): Promise<ApartmentState> {
+    const createdApartmentState = await this.apartmentStateModel.create(
+      createApartmentStateDto,
+    );
+
+    return createdApartmentState.save();
+  }
+
+  async findAll(): Promise<ApartmentState[]> {
+    return this.apartmentStateModel.find().exec();
+  }
+}
