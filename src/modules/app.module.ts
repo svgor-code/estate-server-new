@@ -4,6 +4,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from '../controllers/app.controller';
 import { AppService } from '../services/app.service';
 import { AreaModule } from './area.module';
+import { ParserModule } from './parser.module';
 import { StreetModule } from './street.module';
 import { TaskModule } from './task.module';
 
@@ -18,6 +19,7 @@ const mongoConnectionString = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@est
     StreetModule,
     AreaModule,
     TaskModule,
+    ParserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
