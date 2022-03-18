@@ -1,4 +1,8 @@
-export type ApartmentStatus = 'published' | 'not-published' | 'deleted';
+export enum ApartmentStatusEnum {
+  PUBLISHED = 'published',
+  CLOSED = 'closed',
+  DELETED = 'deleted',
+}
 
 export interface IApartment {
   platformId: string;
@@ -12,5 +16,7 @@ export interface IApartment {
   square: number;
   floor?: number;
   area?: string;
-  status?: ApartmentStatus;
+  status?: ApartmentStatusEnum;
+  checkCounter?: number;
+  checkedAt?: Date;
 }

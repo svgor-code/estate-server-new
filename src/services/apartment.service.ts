@@ -4,12 +4,22 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Apartment, ApartmentDocument } from 'src/schemas/apartment.schema';
 import { Area, AreaDocument } from 'src/schemas/area.schema';
 import { CreateApartmentDto } from 'src/dto/apartment/CreateApartmentDto';
-import { IApartment } from 'src/interfaces/apartment.interface';
+import {
+  ApartmentStatusEnum,
+  IApartment,
+} from 'src/interfaces/apartment.interface';
+import { UpdateApartmentStateDto } from 'src/dto/apartment/UpdateApartmentStateDto';
+import { UpdateApartmentStatusDto } from 'src/dto/apartment/UpdateApartmentStatusDto copy';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
     _id: any;
   };
+
+type ApartmentUpdateStatusType = {
+  status: ApartmentStatusEnum;
+  checkCounter: number;
+};
 
 @Injectable()
 export class ApartmentService {
@@ -47,6 +57,38 @@ export class ApartmentService {
     return this.apartmentModel.find().exec();
   }
 
+  async getById(id: string): Promise<Apartment> {
+    return this.apartmentModel.findById(id).exec();
+  }
+
+  async updateStatus({
+    id,
+    status,
+  }: UpdateApartmentStatusDto): Promise<Apartment> {
+    const apartment = await this.getById(id);
+    const { checkCounter } = apartment;
+
+    const updateData = this.getApartmentStateData(status, checkCounter);
+
+    return await this.apartmentModel.findByIdAndUpdate(id, {
+      $set: {
+        ...updateData,
+        checkedAt: new Date(),
+      },
+    });
+  }
+
+  async updateState({
+    id,
+    state,
+  }: UpdateApartmentStateDto): Promise<Apartment> {
+    return await this.apartmentModel.findByIdAndUpdate(id, {
+      $set: {
+        state,
+      },
+    });
+  }
+
   private findSuitableApartaments(
     areas: AreaResultType[],
     apartaments: IApartment[],
@@ -72,7 +114,9 @@ export class ApartmentService {
         {
           ...curr,
           area: area._id,
-          status: 'published',
+          status: ApartmentStatusEnum.PUBLISHED,
+          checkCounter: 0,
+          checkedAt: new Date(),
         },
       ];
     }, []);
@@ -103,5 +147,36 @@ export class ApartmentService {
         return false;
       });
     });
+  }
+
+  private getApartmentStateData(
+    status: ApartmentStatusEnum,
+    checkCounter: number,
+  ): ApartmentUpdateStatusType {
+    if (status === ApartmentStatusEnum.PUBLISHED) {
+      return {
+        status: ApartmentStatusEnum.PUBLISHED,
+        checkCounter: 0,
+      };
+    }
+
+    if (status === ApartmentStatusEnum.CLOSED) {
+      if (checkCounter >= 3) {
+        return {
+          status: ApartmentStatusEnum.DELETED,
+          checkCounter,
+        };
+      }
+
+      return {
+        status,
+        checkCounter: checkCounter + 1,
+      };
+    }
+
+    return {
+      status,
+      checkCounter,
+    };
   }
 }

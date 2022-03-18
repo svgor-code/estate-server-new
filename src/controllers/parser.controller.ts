@@ -1,20 +1,25 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApartmentService } from 'src/services/apartment.service';
 import { ParserService } from 'src/services/parser.service';
 
-@Controller()
+@Controller('parsers')
 export class ParserController {
   constructor(
     private readonly parserService: ParserService,
     private readonly apartmentService: ApartmentService,
   ) {}
 
-  @Get('/parser-data')
-  async getParserData(): Promise<string> {
-    const catalog = await this.parserService.startAvitoCatalog();
+  @Get('/avito-catalog')
+  async getAvitoCatalog(): Promise<string> {
+    const result = await this.parserService.parseAvitoCatalog();
 
-    await this.apartmentService.create({ apartments: catalog });
+    return JSON.stringify(result);
+  }
 
-    return JSON.stringify(catalog);
+  @Get('/avito-item/:id')
+  async getAvitoItem(@Param('id') id: string): Promise<string> {
+    const result = await this.parserService.parseAvitoItem(id);
+
+    return JSON.stringify(result);
   }
 }

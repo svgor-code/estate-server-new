@@ -27,3 +27,7 @@ services:
       - ${MONGO_PORT}:${MONGO_PORT}
     volumes:
       - ~/apps/mongo:/data/db
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379

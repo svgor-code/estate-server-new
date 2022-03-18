@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { ApartmentStatus } from 'src/interfaces/apartment.interface';
+import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 import { ApartmentState } from './apartmentState.schema';
 import { Area } from './area.schema';
 
@@ -53,10 +53,16 @@ export class Apartment {
 
   @Prop({
     type: String,
-    enum: ['published', 'not-published', 'deleted'],
+    enum: ApartmentStatusEnum,
     required: true,
   })
-  status: ApartmentStatus;
+  status: ApartmentStatusEnum;
+
+  @Prop({ type: Number })
+  checkCounter: number;
+
+  @Prop({ type: Date })
+  checkedAt: Date;
 }
 
 export const ApartmentSchema = SchemaFactory.createForClass(Apartment);

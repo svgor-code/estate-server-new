@@ -33,7 +33,10 @@ export class AreaService {
   }
 
   async findAll(): Promise<Area[]> {
-    return this.areaModel.find().populate('streetHouses').exec();
+    return this.areaModel
+      .find()
+      .populate({ path: 'streetHouses', populate: { path: 'street' } })
+      .exec();
   }
 
   async update(id: string, updateAreaDto: UpdateAreaDto): Promise<Area> {
