@@ -17,12 +17,18 @@ services:
       - PORT=${PORT}
       - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DB=${MONGO_DB}
       - TG_TOKEN=${TG_TOKEN}
       - TG_CHAT_ID=${TG_CHAT_ID}
   mongo:
     image: mongo
     restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
     ports:
       - ${MONGO_PORT}:${MONGO_PORT}
     volumes:
