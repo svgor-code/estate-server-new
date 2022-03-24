@@ -34,7 +34,6 @@ services:
     volumes:
       - ~/apps/mongo:/data/db
   redis:
-    build: .
     image: redis:alpine
     user: root
     ports:
