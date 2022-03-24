@@ -82,6 +82,7 @@ export class ParserService {
           rooms,
           square,
           floor,
+          address,
         };
       });
 

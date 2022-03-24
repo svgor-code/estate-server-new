@@ -10,6 +10,7 @@ export interface IApartment {
   href: string;
   price: number;
   pricePerMeter: number;
+  address: string;
   street: string;
   house: string;
   rooms?: number;

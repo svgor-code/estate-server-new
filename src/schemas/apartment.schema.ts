@@ -25,6 +25,9 @@ export class Apartment {
   pricePerMeter: number;
 
   @Prop({ type: String, required: true })
+  address: string;
+
+  @Prop({ type: String, required: true })
   street: string;
 
   @Prop({ type: String, required: true })

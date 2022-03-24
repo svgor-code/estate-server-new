@@ -54,7 +54,11 @@ export class ApartmentService {
   }
 
   async findAll(): Promise<Apartment[]> {
-    return this.apartmentModel.find().exec();
+    return this.apartmentModel
+      .find()
+      .populate({ path: 'area' })
+      .populate({ path: 'state' })
+      .exec();
   }
 
   async getById(id: string): Promise<Apartment> {
