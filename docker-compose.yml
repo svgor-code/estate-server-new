@@ -34,6 +34,10 @@ services:
     volumes:
       - ~/apps/mongo:/data/db
   redis:
+    build: .
     image: redis:alpine
+    user: root
     ports:
       - 6379:6379
+    volumes:
+      - 'redis:/var/lib/redis'
