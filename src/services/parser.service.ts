@@ -55,7 +55,7 @@ export class ParserService {
           .split(',')[0]
           .trim();
 
-        this.logger.log(title, href);
+        this.logger.log(`${title} ${href} ${address}`);
 
         const house = address.split(',')[1]?.trim();
 
