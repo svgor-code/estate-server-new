@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import mongodb from 'mongodb';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CreateApartmentStateDto } from 'src/dto/apartmentState/CreateApartmentStateDto';
 import { ApartmentState } from 'src/schemas/apartmentState.schema';
 import { ApartmentStateService } from 'src/services/apartmentState.service';
@@ -14,7 +15,13 @@ export class ApartmentStateController {
     return this.apartmentStateService.create(createApartmentStateDto);
   }
 
+  @Get()
   async findAll(): Promise<ApartmentState[]> {
     return this.apartmentStateService.findAll();
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<mongodb.DeleteResult> {
+    return this.apartmentStateService.delete(id);
   }
 }
