@@ -53,9 +53,9 @@ export class ApartmentService {
     return createdApartaments;
   }
 
-  async findAll(): Promise<Apartment[]> {
+  async findAll(status: ApartmentStatusEnum): Promise<Apartment[]> {
     return this.apartmentModel
-      .find()
+      .find({ status })
       .populate({ path: 'area' })
       .populate({ path: 'state' })
       .exec();
