@@ -55,7 +55,8 @@ export class ParserService {
           .split(',')[0]
           .trim();
 
-        this.logger.log(href);
+        this.logger.log(title, href);
+
         const house = address.split(',')[1]?.trim();
 
         const square = Number.parseFloat(
