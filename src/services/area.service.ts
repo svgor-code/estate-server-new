@@ -39,6 +39,13 @@ export class AreaService {
       .exec();
   }
 
+  async get(id: string): Promise<Area> {
+    return this.areaModel
+      .findById(id)
+      .populate({ path: 'streetHouses', populate: { path: 'street' } })
+      .exec();
+  }
+
   async update(id: string, updateAreaDto: UpdateAreaDto): Promise<Area> {
     await this.removeStreetHouses(id);
 

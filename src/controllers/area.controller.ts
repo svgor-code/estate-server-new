@@ -35,6 +35,11 @@ export class AreaController {
     return this.areaService.findAll();
   }
 
+  @Get(':id')
+  async get(@Param('id') id: string): Promise<Area> {
+    return this.areaService.get(id);
+  }
+
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<mongodb.DeleteResult> {
     return this.areaService.delete(id);
