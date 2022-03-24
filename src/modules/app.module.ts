@@ -8,6 +8,7 @@ import { AreaModule } from './area.module';
 import { ParserModule } from './parser.module';
 import { StreetModule } from './street.module';
 import { TaskModule } from './task.module';
+import { ApartmentStateModule } from './apartmentState.module';
 
 const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_PORT, MONGO_DB } = process.env;
 
@@ -27,6 +28,7 @@ const mongoConnectionString = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@est
     AreaModule,
     TaskModule,
     ParserModule,
+    ApartmentStateModule,
   ],
   controllers: [AppController],
   providers: [AppService],
