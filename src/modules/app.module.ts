@@ -22,6 +22,7 @@ const mongoConnectionString = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@est
       redis: {
         host: 'localhost',
         port: 6379,
+        maxRetriesPerRequest: null,
       },
     }),
     StreetModule,
