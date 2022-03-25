@@ -106,7 +106,10 @@ export class ParserService {
     }
   }
 
-  async parseAvitoItem(href: string): Promise<{
+  async parseAvitoItem(
+    id: string,
+    href: string,
+  ): Promise<{
     status: ApartmentStatusEnum | null;
     success: boolean;
     error?: Error;

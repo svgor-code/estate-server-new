@@ -69,7 +69,10 @@ export class TaskService {
       return await job.progress(100);
     }
 
-    const result = await this.parserService.parseAvitoItem(apartment.href);
+    const result = await this.parserService.parseAvitoItem(
+      apartment._id,
+      apartment.href,
+    );
 
     if (result.success) {
       return await job.progress(100);
