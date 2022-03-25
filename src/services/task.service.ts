@@ -44,7 +44,7 @@ export class TaskService {
     const apartments = await this.apartmentModel.find({
       checkedAt: {
         // $lte: moment().subtract(4, 'days'),
-        $lte: moment(),
+        $lte: moment().toDate(),
       },
     });
 

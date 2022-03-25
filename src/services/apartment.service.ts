@@ -82,7 +82,7 @@ export class ApartmentService {
     return await this.apartmentModel.findByIdAndUpdate(id, {
       $set: {
         ...updateData,
-        checkedAt: moment(),
+        checkedAt: moment().toDate(),
       },
     });
   }
@@ -125,7 +125,7 @@ export class ApartmentService {
           area: area._id,
           status: ApartmentStatusEnum.PUBLISHED,
           checkCounter: 0,
-          checkedAt: new Date(),
+          checkedAt: moment().toDate(),
         },
       ];
     }, []);
