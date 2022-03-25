@@ -77,9 +77,9 @@ export class TaskService {
     console.log(currentApartmentsIdsInQueue);
 
     await this.apartmentsCheckerQueue.addBulk(
-      queueJobs.filter((job) => {
-        console.log(job.data);
-        return !currentApartmentsIdsInQueue.includes(job.data);
+      queueJobs.filter((job: any) => {
+        console.log(job.data.toString());
+        return !currentApartmentsIdsInQueue.includes(job.data.toString());
       }),
     );
   }
