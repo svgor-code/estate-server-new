@@ -8,6 +8,19 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Apartment, ApartmentDocument } from 'src/schemas/apartment.schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
+/*
+
+  * * * * * *
+  | | | | | |
+  | | | | | day of week
+  | | | | months
+  | | | day of month
+  | | hours
+  | minutes
+  seconds (optional)
+
+*/
+
 @Injectable()
 export class TaskService {
   private readonly logger = new Logger(TaskService.name);
@@ -25,7 +38,7 @@ export class TaskService {
     this.parserService.parseAvitoCatalog();
   }
 
-  @Cron(CronExpression.EVERY_12_HOURS)
+  @Cron('20 * * * * *')
   async generateCheckApartmentsList() {
     const apartments = await this.apartmentModel.find({
       checkedAt: {
@@ -35,7 +48,7 @@ export class TaskService {
 
     const queueJobs = apartments.map((apartment) => {
       return {
-        name: 'check-apartment-status',
+        name: 'apartments-checker',
         data: apartment._id,
       };
     });
@@ -43,7 +56,7 @@ export class TaskService {
     await this.apartmentsCheckerQueue.addBulk(queueJobs);
   }
 
-  @Cron('2 */10 * * * *')
+  @Cron('20 */2 * * * *')
   async checkApartmentsStatus() {
     const job = await this.apartmentsCheckerQueue.getNextJob();
 
