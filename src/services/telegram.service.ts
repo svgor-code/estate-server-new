@@ -54,6 +54,6 @@ export class TelegramService {
   private getApartmentMessageTemplete(apartment: IApartment): string {
     const { title, address, price, pricePerMeter, href } = apartment;
 
-    return `${title} \n Адрес: ${address} \n Цена: ${price} рублей (${pricePerMeter} руб. за кв.м.) \nСсылка: ${href}`;
+    return `${title} \nАдрес: ${address} \nЦена: ${price} рублей (${pricePerMeter} руб. за кв.м.) \nСсылка: ${href}`;
   }
 }
