@@ -56,6 +56,10 @@ export class TaskService {
       return {
         name: 'apartments-checker',
         data: apartment._id,
+        opts: {
+          removeOnComplete: true,
+          removeOnFail: true,
+        },
       };
     });
 
@@ -85,7 +89,7 @@ export class TaskService {
     const apartment = await this.apartmentModel.findById(job.data);
 
     if (!apartment || !apartment.href) {
-      return await job.progress(100);
+      return await job.moveToCompleted();
     }
 
     const result = await this.parserService.parseAvitoItem(
@@ -94,9 +98,11 @@ export class TaskService {
     );
 
     if (result.success) {
-      return await job.progress(100);
+      return await job.moveToCompleted();
     }
 
-    return await job.progress(0);
+    return await job.moveToFailed({
+      message: result.error.message,
+    });
   }
 }
