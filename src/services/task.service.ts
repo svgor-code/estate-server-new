@@ -85,7 +85,7 @@ export class TaskService {
     this.logger.log('start check apartment status');
 
     const job = await this.apartmentsCheckerQueue.getNextJob();
-    const apartment = await this.apartmentModel.findById(job.data);
+    const apartment = await this.apartmentModel.findById(job?.data);
 
     if (!apartment || !apartment.href) {
       return await job.moveToCompleted();
