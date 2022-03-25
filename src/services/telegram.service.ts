@@ -14,7 +14,7 @@ export class TelegramService {
 
   constructor(
     @InjectQueue('apartments-notification')
-    private readonly apartmentsNotificationQueue: Queue<string>,
+    private apartmentsNotificationQueue: Queue<string>,
   ) {}
 
   async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {

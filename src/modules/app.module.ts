@@ -20,7 +20,7 @@ const mongoConnectionString = `mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@est
     ScheduleModule.forRoot(),
     BullModule.forRoot({
       redis: {
-        host: 'localhost',
+        host: 'estate-server-redis-1',
         port: 6379,
         maxRetriesPerRequest: null,
       },
