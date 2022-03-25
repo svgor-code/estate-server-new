@@ -1,6 +1,6 @@
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { Injectable, Logger } from '@nestjs/common';
-import { Job, Queue } from 'bull';
+import { Job, JobStatus, Queue } from 'bull';
 import * as TelegramBot from 'node-telegram-bot-api';
 import { IApartment } from 'src/interfaces/apartment.interface';
 
@@ -18,6 +18,10 @@ export class TelegramService {
   ) {}
 
   async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {
+    this.logger.log(
+      `Added [${apartments.length}] apartments to queue apartments-notification`,
+    );
+
     const queueJobs = apartments.map((apartment) => {
       return {
         name: 'notification-apartment-telegram',
@@ -26,6 +30,16 @@ export class TelegramService {
     });
 
     await this.apartmentsNotificationQueue.addBulk(queueJobs);
+
+    ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'].forEach(
+      (status) => {
+        this.logger.log(
+          `Notifications queue have ${this.apartmentsNotificationQueue.getJobCountByTypes(
+            status as JobStatus,
+          )} ${status} status`,
+        );
+      },
+    );
   }
 
   @Process()
@@ -43,7 +57,20 @@ export class TelegramService {
       return await job.progress(0);
     }
 
-    return await job.progress(100);
+    await job.progress(100);
+
+    this.logger.log(
+      `Notifications queue have ${this.apartmentsNotificationQueue.getJobCountByTypes(
+        [
+          'active',
+          'completed',
+          'delayed',
+          'failed',
+          'paused',
+          'waiting',
+        ] as JobStatus[],
+      )}`,
+    );
   }
 
   private getApartmentMessageTemplete(apartment: IApartment): string {
