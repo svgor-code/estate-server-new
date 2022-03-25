@@ -48,7 +48,7 @@ export class TelegramService {
     }
 
     this.logger.log(`New apartament was sent to bot`);
-    await job.progress(100);
+    await job.moveToCompleted();
   }
 
   private getApartmentMessageTemplete(apartment: IApartment): string {
