@@ -55,8 +55,6 @@ export class ParserService {
           .split(',')[0]
           .trim();
 
-        this.logger.log(`${title} ${href} ${address}`);
-
         const house = address.split(',')[1]?.trim();
 
         const square = Number.parseFloat(
@@ -71,6 +69,8 @@ export class ParserService {
         const floor = Number.parseInt(title.split(', ')[2].split('/')[0]);
 
         const pricePerMeter = Math.floor(price / square);
+
+        this.logger.log(`${address}`);
 
         return {
           platformId,
@@ -112,7 +112,11 @@ export class ParserService {
     error?: Error;
   }> {
     try {
-      const { href } = await this.apartmentService.getById(id);
+      const apartment = await this.apartmentService.getById(id);
+
+      this.logger.log(id, apartment);
+
+      const { href } = apartment;
 
       this.logger.log(`Start parse apartament ${href}`);
 
