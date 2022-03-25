@@ -74,11 +74,8 @@ export class TaskService {
 
     const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
 
-    console.log(currentApartmentsIdsInQueue);
-
     await this.apartmentsCheckerQueue.addBulk(
       queueJobs.filter((job: any) => {
-        console.log(job.data.toString());
         return !currentApartmentsIdsInQueue.includes(job.data.toString());
       }),
     );
