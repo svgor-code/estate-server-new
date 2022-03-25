@@ -40,9 +40,11 @@ export class TaskService {
 
   @Cron('20 * * * * *')
   async generateCheckApartmentsList() {
+    this.logger.log('start generate apartments list to check');
     const apartments = await this.apartmentModel.find({
       checkedAt: {
-        $lte: moment().subtract(4, 'days'),
+        // $lte: moment().subtract(4, 'days'),
+        $lte: moment(),
       },
     });
 
@@ -58,6 +60,8 @@ export class TaskService {
 
   @Cron('20 */2 * * * *')
   async checkApartmentsStatus() {
+    this.logger.log('start check apartment status');
+
     const job = await this.apartmentsCheckerQueue.getNextJob();
 
     const result = await this.parserService.parseAvitoItem(job.data);
