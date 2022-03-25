@@ -18,7 +18,8 @@ export class ParserController {
 
   @Get('/avito-item/:id')
   async getAvitoItem(@Param('id') id: string): Promise<string> {
-    const result = await this.parserService.parseAvitoItem(id);
+    const apartment = await this.apartmentService.getById(id);
+    const result = await this.parserService.parseAvitoItem(id, apartment.href);
 
     return JSON.stringify(result);
   }
