@@ -8,14 +8,14 @@ import { IApartment } from 'src/interfaces/apartment.interface';
 @Injectable()
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
+  private readonly bot = new TelegramBot(process.env.TG_TOKEN, {
+    polling: true,
+  });
 
   constructor(
     @InjectQueue('apartments-notification')
     private readonly apartmentsNotificationQueue: Queue<string>,
-    private readonly bot: TelegramBot,
-  ) {
-    bot = new TelegramBot(process.env.TG_TOKEN, { polling: true });
-  }
+  ) {}
 
   async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {
     const queueJobs = apartments.map((apartment) => {
