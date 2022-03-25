@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { Queue } from 'bull';
+import Bull, { Queue } from 'bull';
 import { Model } from 'mongoose';
 import { InjectQueue } from '@nestjs/bull';
 import { ParserService } from './parser.service';
@@ -48,14 +48,33 @@ export class TaskService {
       },
     });
 
-    const queueJobs = apartments.map((apartment) => {
+    const queueJobs: {
+      name?: string;
+      data: string;
+      opts?: Omit<Bull.JobOptions, 'repeat'>;
+    }[] = apartments.map((apartment) => {
       return {
         name: 'apartments-checker',
         data: apartment._id,
       };
     });
 
-    await this.apartmentsCheckerQueue.addBulk(queueJobs);
+    const currentJobs = await this.apartmentsCheckerQueue.getJobs([
+      'active',
+      'completed',
+      'delayed',
+      'failed',
+      'paused',
+      'waiting',
+    ]);
+
+    const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
+
+    await this.apartmentsCheckerQueue.addBulk(
+      queueJobs.filter(
+        (job) => !currentApartmentsIdsInQueue.includes(job.data),
+      ),
+    );
   }
 
   @Cron('20 */2 * * * *')
