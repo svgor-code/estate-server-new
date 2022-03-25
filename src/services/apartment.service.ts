@@ -9,7 +9,8 @@ import {
   IApartment,
 } from 'src/interfaces/apartment.interface';
 import { UpdateApartmentStateDto } from 'src/dto/apartment/UpdateApartmentStateDto';
-import { UpdateApartmentStatusDto } from 'src/dto/apartment/UpdateApartmentStatusDto copy';
+import { UpdateApartmentStatusDto } from 'src/dto/apartment/UpdateApartmentStatusDto';
+import { TelegramService } from './telegram.service';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
@@ -30,6 +31,7 @@ export class ApartmentService {
     private areaModel: Model<AreaDocument>,
     @InjectModel(Apartment.name)
     private apartmentModel: Model<ApartmentDocument>,
+    private readonly telegramService: TelegramService,
   ) {}
 
   async create(createApartmentDto: CreateApartmentDto): Promise<Apartment[]> {
@@ -45,6 +47,8 @@ export class ApartmentService {
       createApartmentDto.apartments,
       existingApartaments,
     );
+
+    this.telegramService.addedApartmentsToQueue(apartaments);
 
     const createdApartaments = await this.apartmentModel.insertMany(
       apartaments,

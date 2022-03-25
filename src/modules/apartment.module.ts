@@ -4,6 +4,7 @@ import { ApartmentController } from 'src/controllers/apartment.controller';
 import { Apartment, ApartmentSchema } from 'src/schemas/apartment.schema';
 import { Area, AreaSchema } from 'src/schemas/area.schema';
 import { ApartmentService } from 'src/services/apartment.service';
+import { TelegramModule } from './telegram.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { ApartmentService } from 'src/services/apartment.service';
     MongooseModule.forFeature([
       { name: Apartment.name, schema: ApartmentSchema },
     ]),
+    TelegramModule,
   ],
   controllers: [ApartmentController],
   providers: [ApartmentService],
