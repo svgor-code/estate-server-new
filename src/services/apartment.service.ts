@@ -11,6 +11,7 @@ import {
 import { UpdateApartmentStateDto } from 'src/dto/apartment/UpdateApartmentStateDto';
 import { UpdateApartmentStatusDto } from 'src/dto/apartment/UpdateApartmentStatusDto';
 import { TelegramService } from './telegram.service';
+import * as moment from 'moment';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
@@ -81,7 +82,7 @@ export class ApartmentService {
     return await this.apartmentModel.findByIdAndUpdate(id, {
       $set: {
         ...updateData,
-        checkedAt: new Date(),
+        checkedAt: moment(),
       },
     });
   }
