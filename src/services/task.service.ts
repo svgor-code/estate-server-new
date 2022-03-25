@@ -63,8 +63,13 @@ export class TaskService {
     this.logger.log('start check apartment status');
 
     const job = await this.apartmentsCheckerQueue.getNextJob();
+    const apartment = await this.apartmentModel.findById(job.data);
 
-    const result = await this.parserService.parseAvitoItem(job.data);
+    if (!apartment || !apartment.href) {
+      return await job.progress(100);
+    }
+
+    const result = await this.parserService.parseAvitoItem(apartment.href);
 
     if (result.success) {
       return await job.progress(100);

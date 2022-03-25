@@ -106,18 +106,12 @@ export class ParserService {
     }
   }
 
-  async parseAvitoItem(id: string): Promise<{
+  async parseAvitoItem(href: string): Promise<{
     status: ApartmentStatusEnum | null;
     success: boolean;
     error?: Error;
   }> {
     try {
-      const apartment = await this.apartmentService.getById(id);
-
-      this.logger.log(id, apartment);
-
-      const { href } = apartment;
-
       this.logger.log(`Start parse apartament ${href}`);
 
       const response = await got.get(href);
