@@ -22,15 +22,10 @@ export class TelegramService {
       `Added [${apartments.length}] apartments to queue apartments-notification`,
     );
 
-    ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'].forEach(
-      (status) => {
-        this.logger.log(
-          `Notifications queue have ${this.apartmentsNotificationQueue.getJobCountByTypes(
-            status as JobStatus,
-          )} ${status} status`,
-        );
-      },
-    );
+    const activeJobs =
+      await this.apartmentsNotificationQueue.getJobCountByTypes('active');
+
+    this.logger.log(`Notifications queue have ${activeJobs} active status`);
 
     const queueJobsPromise = apartments.map(async (apartment) => {
       return await this.apartmentsNotificationQueue.add(
