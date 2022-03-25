@@ -22,14 +22,15 @@ export class TelegramService {
       `Added [${apartments.length}] apartments to queue apartments-notification`,
     );
 
-    const queueJobs = apartments.map((apartment) => {
-      return {
-        name: 'notification-apartment-telegram',
-        data: this.getApartmentMessageTemplete(apartment),
-      };
+    const queueJobsPromise = apartments.map(async (apartment) => {
+      return await this.apartmentsNotificationQueue.add(
+        this.getApartmentMessageTemplete(apartment),
+      );
     });
 
-    await this.apartmentsNotificationQueue.addBulk(queueJobs);
+    const [queueJobs] = await Promise.all(queueJobsPromise);
+
+    this.logger.log('Queue jobs: ', queueJobs);
 
     ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'].forEach(
       (status) => {
