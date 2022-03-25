@@ -74,10 +74,13 @@ export class TaskService {
 
     const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
 
+    console.log(currentApartmentsIdsInQueue);
+
     await this.apartmentsCheckerQueue.addBulk(
-      queueJobs.filter(
-        (job) => !currentApartmentsIdsInQueue.includes(job.data),
-      ),
+      queueJobs.filter((job) => {
+        console.log(job.data);
+        return !currentApartmentsIdsInQueue.includes(job.data);
+      }),
     );
   }
 
