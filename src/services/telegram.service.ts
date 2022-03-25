@@ -47,6 +47,7 @@ export class TelegramService {
       return await job.progress(0);
     }
 
+    this.logger.log(`New apartament was sent to bot`);
     await job.progress(100);
   }
 
