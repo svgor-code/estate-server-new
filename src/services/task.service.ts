@@ -71,11 +71,11 @@ export class TaskService {
       'waiting',
     ]);
 
-    const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
+    const currentApartmentsIdsInQueue = currentJobs.map((job) => job?.data);
 
     await this.apartmentsCheckerQueue.addBulk(
       queueJobs.filter((job: any) => {
-        return !currentApartmentsIdsInQueue.includes(job.data.toString());
+        return !currentApartmentsIdsInQueue.includes(job?.data.toString());
       }),
     );
   }
