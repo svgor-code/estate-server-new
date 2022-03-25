@@ -4,8 +4,8 @@ import { Job, JobStatus, Queue } from 'bull';
 import * as TelegramBot from 'node-telegram-bot-api';
 import { IApartment } from 'src/interfaces/apartment.interface';
 
-@Processor('apartments-notification')
 @Injectable()
+@Processor('apartments-notification')
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
   private readonly bot = new TelegramBot(process.env.TG_TOKEN, {
