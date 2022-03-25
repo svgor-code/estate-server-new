@@ -71,11 +71,11 @@ export class TaskService {
       'waiting',
     ]);
 
-    const currentApartmentsIdsInQueue = currentJobs.map((job) => job?.data);
+    const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
 
     await this.apartmentsCheckerQueue.addBulk(
       queueJobs.filter((job: any) => {
-        return !currentApartmentsIdsInQueue.includes(job?.data.toString());
+        return !currentApartmentsIdsInQueue.includes(job.data.toString());
       }),
     );
   }
@@ -85,7 +85,12 @@ export class TaskService {
     this.logger.log('start check apartment status');
 
     const job = await this.apartmentsCheckerQueue.getNextJob();
-    const apartment = await this.apartmentModel.findById(job?.data);
+
+    if (!job) {
+      return;
+    }
+
+    const apartment = await this.apartmentModel.findById(job.data);
 
     if (!apartment || !apartment.href) {
       return await job.moveToCompleted();
