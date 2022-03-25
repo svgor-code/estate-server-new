@@ -4,8 +4,8 @@ import { Job, JobStatus, Queue } from 'bull';
 import * as TelegramBot from 'node-telegram-bot-api';
 import { IApartment } from 'src/interfaces/apartment.interface';
 
-@Injectable()
 @Processor('apartments-notification')
+@Injectable()
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
   private readonly bot = new TelegramBot(process.env.TG_TOKEN, {
@@ -14,7 +14,7 @@ export class TelegramService {
 
   constructor(
     @InjectQueue('apartments-notification')
-    private apartmentsNotificationQueue: Queue<string>,
+    private readonly apartmentsNotificationQueue: Queue<string>,
   ) {}
 
   async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {
@@ -22,33 +22,17 @@ export class TelegramService {
       `Added [${apartments.length}] apartments to queue apartments-notification`,
     );
 
-    const activeJobs =
-      await this.apartmentsNotificationQueue.getJobCountByTypes('active');
-
-    this.logger.log(`Notifications queue have ${activeJobs} active status`);
-
-    const queueJobsPromise = apartments.map(async (apartment) => {
-      return await this.apartmentsNotificationQueue.add(
-        this.getApartmentMessageTemplete(apartment),
-      );
+    const queueJobs = apartments.map((apartment) => {
+      return {
+        name: 'apartments-notification',
+        data: this.getApartmentMessageTemplete(apartment),
+      };
     });
 
-    const [queueJobs] = await Promise.all(queueJobsPromise);
-
-    this.logger.log('Queue jobs: ', queueJobs);
-
-    ['active', 'completed', 'delayed', 'failed', 'paused', 'waiting'].forEach(
-      (status) => {
-        this.logger.log(
-          `Notifications queue have ${this.apartmentsNotificationQueue.getJobCountByTypes(
-            status as JobStatus,
-          )} ${status} status`,
-        );
-      },
-    );
+    await this.apartmentsNotificationQueue.addBulk(queueJobs);
   }
 
-  @Process()
+  @Process('apartments-notification')
   async sendNewApartmentMessage(job: Job<string>): Promise<void> {
     const message = await this.bot.sendMessage(
       process.env.TG_CHAT_ID,
@@ -64,19 +48,6 @@ export class TelegramService {
     }
 
     await job.progress(100);
-
-    this.logger.log(
-      `Notifications queue have ${this.apartmentsNotificationQueue.getJobCountByTypes(
-        [
-          'active',
-          'completed',
-          'delayed',
-          'failed',
-          'paused',
-          'waiting',
-        ] as JobStatus[],
-      )}`,
-    );
   }
 
   private getApartmentMessageTemplete(apartment: IApartment): string {
