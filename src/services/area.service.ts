@@ -58,7 +58,7 @@ export class AreaService {
       {
         $set: {
           name: updateAreaDto.name,
-          pricePerMeter: updateAreaDto.pricePerMeter,
+          description: updateAreaDto.description,
           streetHouses,
         },
       },

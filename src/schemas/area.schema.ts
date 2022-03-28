@@ -10,8 +10,8 @@ export class Area {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: Number, require: true })
-  pricePerMeter: number;
+  @Prop({ type: String, default: '' })
+  description: string;
 
   @Prop({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'StreetHouse' }],
