@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 import { Apartment } from 'src/schemas/apartment.schema';
 import { ApartmentService } from 'src/services/apartment.service';
@@ -20,5 +20,13 @@ export class ApartmentController {
   @Get('sold')
   async findSoldAll(): Promise<Apartment[]> {
     return this.apartmentService.findAll(ApartmentStatusEnum.DELETED);
+  }
+
+  @Put('/change-state/:id')
+  async update(
+    @Param('id') id: string,
+    @Body() body: { state: string },
+  ): Promise<Apartment> {
+    return this.apartmentService.updateState({ id, state: body.state });
   }
 }

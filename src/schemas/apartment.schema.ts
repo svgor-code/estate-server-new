@@ -42,16 +42,10 @@ export class Apartment {
   @Prop({ type: Number })
   floor: number;
 
-  @Prop({
-    type: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Area', required: true },
-    ],
-  })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Area', required: true })
   area: Area;
 
-  @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ApartmentState' }],
-  })
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ApartmentState' })
   state: ApartmentState;
 
   @Prop({
