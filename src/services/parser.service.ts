@@ -125,11 +125,7 @@ export class ParserService {
 
       let status = ApartmentStatusEnum.PUBLISHED;
 
-      if (isDeleted) {
-        status = ApartmentStatusEnum.DELETED;
-      }
-
-      if (isClosed) {
+      if (isDeleted || isClosed) {
         status = ApartmentStatusEnum.CLOSED;
       }
 
