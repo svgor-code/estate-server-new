@@ -17,12 +17,12 @@ export class ApartmentController {
     return this.apartmentService.findAll(ApartmentStatusEnum.CLOSED);
   }
 
-  @Get('sold')
-  async findSoldAll(): Promise<Apartment[]> {
+  @Get('removed')
+  async findRemovedAll(): Promise<Apartment[]> {
     return this.apartmentService.findAll(ApartmentStatusEnum.DELETED);
   }
 
-  @Put('/change-state/:id')
+  @Put('change-state/:id')
   async update(
     @Param('id') id: string,
     @Body() body: { state: string },
