@@ -18,7 +18,8 @@ export class StreetService {
   }
 
   async findAll(): Promise<Street[]> {
-    return this.streetModel.find().exec();
+    const streets = await this.streetModel.find().exec();
+    return streets.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   async delete(id: string): Promise<mongodb.DeleteResult> {
