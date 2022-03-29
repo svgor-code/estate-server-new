@@ -5,7 +5,7 @@ export type StreetDocument = Street & Document;
 
 @Schema()
 export class Street {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, unique: true })
   name: string;
 }
 
