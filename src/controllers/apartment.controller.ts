@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
+import mongodb from 'mongodb';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 import { Apartment } from 'src/schemas/apartment.schema';
 import { ApartmentService } from 'src/services/apartment.service';
@@ -28,5 +29,10 @@ export class ApartmentController {
     @Body() body: { state: string },
   ): Promise<Apartment> {
     return this.apartmentService.updateState({ id, state: body.state });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<mongodb.DeleteResult> {
+    return this.apartmentService.delete(id);
   }
 }

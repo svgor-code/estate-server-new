@@ -1,3 +1,4 @@
+import mongodb from 'mongodb';
 import { Model, Document } from 'mongoose';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -95,6 +96,12 @@ export class ApartmentService {
       $set: {
         state,
       },
+    });
+  }
+
+  async delete(id: string): Promise<mongodb.DeleteResult> {
+    return await this.apartmentModel.deleteOne({
+      _id: id,
     });
   }
 
