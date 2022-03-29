@@ -10,7 +10,12 @@ export class StreetController {
 
   @Post()
   async create(@Body() createStreetDto: CreateStreetDto): Promise<Street> {
-    return this.streetService.create(createStreetDto);
+    try {
+      const res = await this.streetService.create(createStreetDto);
+      return res;
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get()
