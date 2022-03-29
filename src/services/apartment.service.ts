@@ -60,11 +60,15 @@ export class ApartmentService {
   }
 
   async findAll(status: ApartmentStatusEnum): Promise<Apartment[]> {
-    return this.apartmentModel
+    const apartments = await this.apartmentModel
       .find({ status })
       .populate({ path: 'area' })
       .populate({ path: 'state' })
       .exec();
+
+    return apartments.sort((a, b) =>
+      moment(a.createdAt).diff(moment(b.createdAt)),
+    );
   }
 
   async getById(id: string): Promise<Apartment> {
@@ -133,6 +137,7 @@ export class ApartmentService {
           status: ApartmentStatusEnum.PUBLISHED,
           checkCounter: 0,
           checkedAt: moment().toDate(),
+          createdAt: moment().toDate(),
         },
       ];
     }, []);

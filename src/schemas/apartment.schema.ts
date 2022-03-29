@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import moment from 'moment';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
@@ -60,6 +61,9 @@ export class Apartment {
 
   @Prop({ type: Date })
   checkedAt: Date;
+
+  @Prop({ type: Date, required: true, default: moment().toDate() })
+  createdAt: Date;
 }
 
 export const ApartmentSchema = SchemaFactory.createForClass(Apartment);

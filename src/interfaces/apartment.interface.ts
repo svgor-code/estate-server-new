@@ -20,4 +20,5 @@ export interface IApartment {
   status?: ApartmentStatusEnum;
   checkCounter?: number;
   checkedAt?: Date;
+  createdAt: Date;
 }
