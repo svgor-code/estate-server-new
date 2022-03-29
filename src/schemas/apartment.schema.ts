@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import moment from 'moment';
+import * as moment from 'moment';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
