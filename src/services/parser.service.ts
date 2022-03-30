@@ -117,31 +117,26 @@ export class ParserService {
     try {
       this.logger.log(`Start parse apartament ${href}`);
 
-      const testHref =
-        'https://www.avito.ru/ulyanovsk/kvartiry/1-k._kvartira_351_m_69_et._2371493681';
-
-      const response = await got.get(testHref);
+      const response = await got.get(href);
       const $ = cheerio.load(response.body);
 
-      const isDeleted = response.url !== testHref;
+      const isDeleted = !!$('title-info-title-text').html();
       const isClosed = !!$('.item-closed-warning').html();
 
       let status = ApartmentStatusEnum.PUBLISHED;
-
-      this.logger.log(isDeleted, isClosed, response.url, testHref);
 
       if (isDeleted || isClosed) {
         status = ApartmentStatusEnum.CLOSED;
       }
 
-      // await this.apartmentService.updateStatus({ id, status });
+      await this.apartmentService.updateStatus({ id, status });
 
       this.logger.log(
-        `Parse apartment info: status ${status}, href: ${testHref}`,
+        `Parse apartment info: status ${status}, href: ${href}, isDeleted: ${isDeleted}, isClosed: ${isClosed} `,
       );
 
       return {
-        status: ApartmentStatusEnum.PUBLISHED,
+        status,
         success: true,
       };
     } catch (error) {
