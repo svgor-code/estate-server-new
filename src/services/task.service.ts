@@ -47,7 +47,7 @@ export class TaskService {
         $ne: ApartmentStatusEnum.DELETED,
       },
       checkedAt: {
-        $lte: moment().subtract(1, 'hours').toDate(),
+        $lte: moment().subtract(1, 'days').toDate(),
       },
     });
 
@@ -58,7 +58,7 @@ export class TaskService {
     }[] = apartments.map((apartment) => {
       return {
         name: 'apartments-checker',
-        data: apartment._id,
+        data: apartment._id.toString(),
         opts: {
           removeOnComplete: true,
           removeOnFail: true,
@@ -79,7 +79,7 @@ export class TaskService {
 
     await this.apartmentsCheckerQueue.addBulk(
       queueJobs.filter((job: any) => {
-        return !currentApartmentsIdsInQueue.includes(job.data.toString());
+        return !currentApartmentsIdsInQueue.includes(job.data);
       }),
     );
   }
