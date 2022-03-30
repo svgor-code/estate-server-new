@@ -128,7 +128,7 @@ export class ParserService {
 
       let status = ApartmentStatusEnum.PUBLISHED;
 
-      this.logger.log(isDeleted, isClosed, response.url);
+      this.logger.log(isDeleted, isClosed, response.url, testHref);
 
       if (isDeleted || isClosed) {
         status = ApartmentStatusEnum.CLOSED;
