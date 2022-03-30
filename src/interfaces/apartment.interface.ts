@@ -21,4 +21,5 @@ export interface IApartment {
   checkCounter?: number;
   checkedAt?: Date;
   createdAt?: Date;
+  closedAt?: Date;
 }

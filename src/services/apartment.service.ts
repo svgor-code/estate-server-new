@@ -22,6 +22,7 @@ type AreaResultType = Area &
 type ApartmentUpdateStatusType = {
   status: ApartmentStatusEnum;
   checkCounter: number;
+  closedAt?: Date;
 };
 
 @Injectable()
@@ -78,8 +79,13 @@ export class ApartmentService {
   }: UpdateApartmentStatusDto): Promise<Apartment> {
     const apartment = await this.getById(id);
     const { checkCounter } = apartment;
+    const prevStatus = apartment.status;
 
-    const updateData = this.getApartmentStateData(status, checkCounter);
+    const updateData = this.getApartmentStateData(
+      prevStatus,
+      status,
+      checkCounter,
+    );
 
     return await this.apartmentModel.findByIdAndUpdate(id, {
       $set: {
@@ -168,6 +174,7 @@ export class ApartmentService {
   }
 
   private getApartmentStateData(
+    prevStatus: ApartmentStatusEnum,
     status: ApartmentStatusEnum,
     checkCounter: number,
   ): ApartmentUpdateStatusType {
@@ -186,9 +193,17 @@ export class ApartmentService {
         };
       }
 
+      if (prevStatus === ApartmentStatusEnum.PUBLISHED) {
+        return {
+          status,
+          checkCounter: (checkCounter || 0) + 1,
+          closedAt: moment().toDate(),
+        };
+      }
+
       return {
         status,
-        checkCounter: checkCounter + 1,
+        checkCounter: (checkCounter || 0) + 1,
       };
     }
 

@@ -64,6 +64,9 @@ export class Apartment {
 
   @Prop({ type: Date, required: true, default: moment().toDate() })
   createdAt: Date;
+
+  @Prop({ type: Date })
+  closedAt: Date;
 }
 
 export const ApartmentSchema = SchemaFactory.createForClass(Apartment);
