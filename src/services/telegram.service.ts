@@ -26,6 +26,10 @@ export class TelegramService {
       return {
         name: 'apartments-notification',
         data: this.getApartmentMessageTemplete(apartment),
+        opts: {
+          removeOnComplete: true,
+          removeOnFail: true,
+        },
       };
     });
 
@@ -44,7 +48,10 @@ export class TelegramService {
 
     if (!message || !message.message_id) {
       this.logger.error(`Message was not sent to ${process.env.TG_CHAT_ID}`);
-      return await job.progress(0);
+      await job.moveToFailed({
+        message: `Message was not sent to ${process.env.TG_CHAT_ID}`,
+      });
+      return;
     }
 
     this.logger.log(`New apartament was sent to bot`);
