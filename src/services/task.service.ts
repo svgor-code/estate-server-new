@@ -51,8 +51,6 @@ export class TaskService {
       },
     });
 
-    this.logger.log(`apartments list to check: ${apartments}`);
-
     const queueJobs: {
       name?: string;
       data: string;
