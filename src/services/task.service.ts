@@ -47,7 +47,7 @@ export class TaskService {
         $ne: ApartmentStatusEnum.DELETED,
       },
       checkedAt: {
-        $lte: moment().subtract(1, 'days').toDate(),
+        $lte: moment().subtract(10, 'minutes').toDate(),
       },
     });
 

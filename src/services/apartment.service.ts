@@ -81,10 +81,16 @@ export class ApartmentService {
     const { checkCounter } = apartment;
     const prevStatus = apartment.status;
 
+    this.logger.log(`update status start: id = ${id}, status = ${status}`);
+
     const updateData = this.getApartmentStateData(
       prevStatus,
       status,
       checkCounter,
+    );
+
+    this.logger.log(
+      `new status: id = ${id}, prevStatus = ${prevStatus}, status = ${status}`,
     );
 
     return await this.apartmentModel.findByIdAndUpdate(id, {
