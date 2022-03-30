@@ -7,7 +7,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Apartment, ApartmentDocument } from 'src/schemas/apartment.schema';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 
 /*
 
@@ -39,15 +38,12 @@ export class TaskService {
     this.parserService.parseAvitoCatalog();
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron('20 * * * * *')
   async generateCheckApartmentsList() {
     this.logger.log('start generate apartments list to check');
     const apartments = await this.apartmentModel.find({
-      status: {
-        $ne: ApartmentStatusEnum.DELETED,
-      },
       checkedAt: {
-        $lte: moment().subtract(1, 'hours').toDate(),
+        $lte: moment().subtract(1, 'days').toDate(),
       },
     });
 
@@ -84,7 +80,7 @@ export class TaskService {
     );
   }
 
-  @Cron('*/20 * * * * *')
+  @Cron('20 */2 * * * *')
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
