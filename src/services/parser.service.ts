@@ -131,6 +131,8 @@ export class ParserService {
 
       await this.apartmentService.updateStatus({ id, status });
 
+      this.logger.log(`Parse apartment info: status ${status}, href: ${href}`);
+
       return {
         status,
         success: true,
