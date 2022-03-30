@@ -1,8 +1,7 @@
-import { Controller, Get, Injectable, Param } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApartmentService } from 'src/services/apartment.service';
 import { ParserService } from 'src/services/parser.service';
 
-@Injectable()
 @Controller('parsers')
 export class ParserController {
   constructor(
