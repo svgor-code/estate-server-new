@@ -70,7 +70,7 @@ export class ParserService {
 
         const pricePerMeter = Math.floor(price / square);
 
-        this.logger.log(`${address}`);
+        // this.logger.log(`${address}`);
 
         return {
           platformId,
