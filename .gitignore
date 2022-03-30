@@ -36,3 +36,4 @@ lerna-debug.log*
 
 # MongoDB
 /mongo
+/redis

@@ -67,7 +67,7 @@ export class ApartmentService {
       .exec();
 
     return apartments.sort((a, b) =>
-      moment(a.createdAt).diff(moment(b.createdAt)),
+      moment(b.createdAt).diff(moment(a.createdAt)),
     );
   }
 
