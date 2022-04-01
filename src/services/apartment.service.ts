@@ -156,7 +156,7 @@ export class ApartmentService {
     areas: AreaResultType[],
     apartment: IApartment,
   ): AreaResultType | undefined {
-    const { house, street } = apartment;
+    const { house, address } = apartment;
 
     return areas.find((area) => {
       const { streetHouses } = area;
@@ -168,7 +168,7 @@ export class ApartmentService {
         );
 
         if (
-          areaStreet.includes(street.toLowerCase()) &&
+          areaStreet.includes(address.toLowerCase()) &&
           areaHouses.includes(house.toLowerCase())
         ) {
           return true;
