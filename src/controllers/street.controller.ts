@@ -18,6 +18,16 @@ export class StreetController {
     }
   }
 
+  @Post('/many')
+  async createMany(@Body() streets: CreateStreetDto[]): Promise<Street[]> {
+    try {
+      const res = await this.streetService.bulkCreate(streets);
+      return res;
+    } catch (error) {
+      return error;
+    }
+  }
+
   @Get()
   async findAll(): Promise<Street[]> {
     return this.streetService.findAll();

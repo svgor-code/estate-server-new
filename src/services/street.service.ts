@@ -17,6 +17,11 @@ export class StreetService {
     return createdStreet.save();
   }
 
+  async bulkCreate(streets: CreateStreetDto[]): Promise<Street[]> {
+    const createdStreets = await this.streetModel.insertMany(streets);
+    return createdStreets;
+  }
+
   async findAll(): Promise<Street[]> {
     const streets = await this.streetModel.find().exec();
     return streets.sort((a, b) => a.name.localeCompare(b.name));

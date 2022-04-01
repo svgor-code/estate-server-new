@@ -7,6 +7,9 @@ export type StreetDocument = Street & Document;
 export class Street {
   @Prop({ type: String, required: true, unique: true })
   name: string;
+
+  @Prop({ type: String, unique: true })
+  avitoName: string;
 }
 
 export const StreetSchema = SchemaFactory.createForClass(Street);
