@@ -6,12 +6,18 @@ import {
   ApartmentStatusEnum,
 } from 'src/interfaces/apartment.interface';
 import { ApartmentService } from './apartment.service';
+import { StreetService } from './street.service';
+import Fuse from 'fuse.js';
+import { IStreet } from 'src/interfaces/street.interface';
 
 @Injectable()
 export class ParserService {
   private readonly logger = new Logger(ParserService.name);
 
-  constructor(private apartmentService: ApartmentService) {}
+  constructor(
+    private apartmentService: ApartmentService,
+    private streetService: StreetService,
+  ) {}
 
   async parseAvitoCatalog(): Promise<{
     apartments: IApartment[];
@@ -24,6 +30,8 @@ export class ParserService {
       const response = await got.get(
         'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
       );
+
+      const streets = await this.streetService.findAll();
 
       const $ = cheerio.load(response.body);
 
@@ -47,13 +55,13 @@ export class ParserService {
         );
 
         const address = $(item).find('[class*=geo-address-]').text();
-        const street = address
-          .replace('ул.', '')
-          .replace('пр.', '')
-          .replace('пр-т', '')
-          .replace('б-р', '')
-          .split(',')[0]
-          .trim();
+        // const street = address
+        //   .replace('ул.', '')
+        //   .replace('пр.', '')
+        //   .replace('пр-т', '')
+        //   .replace('б-р', '')
+        //   .split(',')[0]
+        //   .trim();
 
         const house = address.split(',')[1]?.trim();
 
@@ -70,7 +78,10 @@ export class ParserService {
 
         const pricePerMeter = Math.floor(price / square);
 
-        // this.logger.log(`${address}`);
+        const street = this.apartmentService.getApartmentStreet(
+          streets,
+          address,
+        );
 
         return {
           platformId,

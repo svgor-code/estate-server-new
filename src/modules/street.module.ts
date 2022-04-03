@@ -10,5 +10,6 @@ import { StreetService } from 'src/services/street.service';
   ],
   controllers: [StreetController],
   providers: [StreetService],
+  exports: [StreetService],
 })
 export class StreetModule {}

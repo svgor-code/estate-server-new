@@ -23,6 +23,11 @@ export class ApartmentController {
     return this.apartmentService.findAll(ApartmentStatusEnum.DELETED);
   }
 
+  @Get('update-steet-search')
+  async updateStreet(): Promise<Apartment[]> {
+    return this.apartmentService.updateStreetsSearch();
+  }
+
   @Put('change-state/:id')
   async update(
     @Param('id') id: string,

@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import Bull, { Queue } from 'bull';
 import { Model } from 'mongoose';
 import { InjectQueue } from '@nestjs/bull';

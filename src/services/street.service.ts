@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { IStreet } from 'src/interfaces/street.interface';
 import { Street, StreetDocument } from 'src/schemas/street.schema';
 import { CreateStreetDto } from 'src/dto/street/CreateStreetDto';
 import mongodb from 'mongodb';
@@ -22,7 +23,7 @@ export class StreetService {
     return createdStreets;
   }
 
-  async findAll(): Promise<Street[]> {
+  async findAll(): Promise<IStreet[]> {
     const streets = await this.streetModel.find().exec();
     return streets.sort((a, b) => a.name.localeCompare(b.name));
   }

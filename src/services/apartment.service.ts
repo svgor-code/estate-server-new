@@ -12,7 +12,10 @@ import {
 import { UpdateApartmentStateDto } from 'src/dto/apartment/UpdateApartmentStateDto';
 import { UpdateApartmentStatusDto } from 'src/dto/apartment/UpdateApartmentStatusDto';
 import { TelegramService } from './telegram.service';
-import * as moment from 'moment';
+import moment from 'moment';
+import { StreetService } from './street.service';
+import { IStreet } from 'src/interfaces/street.interface';
+import Fuse from 'fuse.js';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
@@ -35,6 +38,7 @@ export class ApartmentService {
     @InjectModel(Apartment.name)
     private apartmentModel: Model<ApartmentDocument>,
     private readonly telegramService: TelegramService,
+    private readonly streetService: StreetService,
   ) {}
 
   async create(createApartmentDto: CreateApartmentDto): Promise<Apartment[]> {
@@ -112,23 +116,74 @@ export class ApartmentService {
     });
   }
 
+  async updateStreet({
+    id,
+    street,
+  }: {
+    id: string;
+    street: string;
+  }): Promise<Apartment> {
+    this.logger.log(`update apartment street: ${id} - ${street}`);
+
+    return await this.apartmentModel.findByIdAndUpdate(id, {
+      $set: {
+        street,
+      },
+    });
+  }
+
+  async updateStreetsSearch(): Promise<Apartment[]> {
+    const apartments = await this.apartmentModel.find().exec();
+    const streets = await this.streetService.findAll();
+
+    const updatedApartments = await Promise.all(
+      apartments.map(async (apartment) => {
+        const street = this.getApartmentStreet(streets, apartment.address);
+        return this.updateStreet({ id: apartment.id, street });
+      }),
+    );
+
+    return updatedApartments;
+  }
+
   async delete(id: string): Promise<mongodb.DeleteResult> {
     return await this.apartmentModel.deleteOne({
       _id: id,
     });
   }
 
+  getApartmentStreet(streets: IStreet[], address: string) {
+    const fuse = new Fuse(streets, {
+      isCaseSensitive: false,
+      keys: [
+        'name',
+        {
+          name: 'avitoName',
+          weight: 2,
+        },
+      ],
+    });
+
+    const findedList = fuse.search(address);
+
+    return findedList?.[0]?.item.name || '';
+  }
+
   private findSuitableApartaments(
     areas: AreaResultType[],
     apartaments: IApartment[],
-    existingApartaments: Apartment[],
+    existingApartaments: (Apartment &
+      Document<any, any, any> & {
+        _id: any;
+      })[],
   ): IApartment[] {
     return apartaments.reduce<IApartment[]>((acc, curr) => {
-      const isAlreadyExist = existingApartaments.some(
+      const existingApartment = existingApartaments.find(
         (item) => item.platformId === curr.platformId,
       );
 
-      if (isAlreadyExist) {
+      if (existingApartment) {
+        this.updateStreet({ id: existingApartment._id, street: curr.street });
         return acc;
       }
 
@@ -156,7 +211,7 @@ export class ApartmentService {
     areas: AreaResultType[],
     apartment: IApartment,
   ): AreaResultType | undefined {
-    const { house, address } = apartment;
+    const { house, street } = apartment;
 
     return areas.find((area) => {
       const { streetHouses } = area;
@@ -167,10 +222,7 @@ export class ApartmentService {
           house.toLowerCase(),
         );
 
-        if (
-          areaStreet.includes(address.toLowerCase()) &&
-          areaHouses.includes(house.toLowerCase())
-        ) {
+        if (areaStreet === street && areaHouses.includes(house.toLowerCase())) {
           return true;
         }
 
