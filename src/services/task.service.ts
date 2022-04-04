@@ -84,7 +84,7 @@ export class TaskService {
     );
   }
 
-  @Cron('*/20 */3 * * * *')
+  @Cron('*/3 * * * *')
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
