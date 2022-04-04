@@ -36,11 +36,6 @@ export class ParserService {
 
       const response = await got.get(
         'http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
-        {
-          timeout: {
-            request: 10000,
-          },
-        },
       );
 
       const streets = await this.streetService.findAll();
@@ -142,11 +137,6 @@ export class ParserService {
 
       const response = await got.get(
         `http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=${href}`,
-        {
-          timeout: {
-            request: 10000,
-          },
-        },
       );
 
       const $ = cheerio.load(response.body);
