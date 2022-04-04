@@ -34,12 +34,12 @@ export class TaskService {
     private readonly apartmentsCheckerQueue: Queue<string>,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   handleCron() {
     this.parserService.parseAvitoCatalog();
   }
 
-  @Cron('20 * * * * *')
+  @Cron('* */1 * * *')
   async generateCheckApartmentsList() {
     this.logger.log('start generate apartments list to check');
     const apartments = await this.apartmentModel.find({
@@ -84,7 +84,7 @@ export class TaskService {
     );
   }
 
-  @Cron('40 * * * * *')
+  @Cron('*/20 */3 * * * *')
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
