@@ -153,20 +153,24 @@ export class ApartmentService {
   }
 
   getApartmentStreet(streets: IStreet[], address: string) {
-    const fuse = new Fuse(streets, {
-      isCaseSensitive: false,
-      keys: [
-        'name',
-        {
-          name: 'avitoName',
-          weight: 2,
-        },
-      ],
-    });
+    try {
+      const fuse = new Fuse(streets, {
+        isCaseSensitive: false,
+        keys: [
+          'name',
+          {
+            name: 'avitoName',
+            weight: 2,
+          },
+        ],
+      });
 
-    const findedList = fuse.search(address);
+      const findedList = fuse.search(address);
 
-    return findedList?.[0]?.item.name || '';
+      return findedList?.[0]?.item.name || '';
+    } catch (e) {
+      this.logger.error(e);
+    }
   }
 
   private findSuitableApartaments(

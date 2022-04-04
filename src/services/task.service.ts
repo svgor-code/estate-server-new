@@ -34,7 +34,7 @@ export class TaskService {
     private readonly apartmentsCheckerQueue: Queue<string>,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('* * * * *')
   handleCron() {
     this.parserService.parseAvitoCatalog();
   }

@@ -1,5 +1,6 @@
 import got from 'got';
 import cheerio from 'cheerio';
+// import scraper from 'scraperapi-sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   IApartment,
@@ -8,6 +9,7 @@ import {
 import { ApartmentService } from './apartment.service';
 import { StreetService } from './street.service';
 
+// const scraperClient = scraper('b8a0d6d4b7886ffa3f7d1a998090228e');
 @Injectable()
 export class ParserService {
   private readonly logger = new Logger(ParserService.name);
@@ -25,8 +27,15 @@ export class ParserService {
     try {
       this.logger.log('avito catalog parser started');
 
+      // const response = await scraperClient.get(
+      //   'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
+      //   {
+      //     render: true,
+      //   },
+      // );
+
       const response = await got.get(
-        'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
+        'http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
         {
           timeout: {
             request: 10000,
@@ -131,11 +140,14 @@ export class ParserService {
     try {
       this.logger.log(`Start parse apartament ${href}`);
 
-      const response = await got.get(href, {
-        timeout: {
-          request: 10000,
+      const response = await got.get(
+        `http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=${href}`,
+        {
+          timeout: {
+            request: 10000,
+          },
         },
-      });
+      );
 
       const $ = cheerio.load(response.body);
 
