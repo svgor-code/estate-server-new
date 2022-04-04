@@ -7,8 +7,6 @@ import {
 } from 'src/interfaces/apartment.interface';
 import { ApartmentService } from './apartment.service';
 import { StreetService } from './street.service';
-import Fuse from 'fuse.js';
-import { IStreet } from 'src/interfaces/street.interface';
 
 @Injectable()
 export class ParserService {
@@ -29,6 +27,11 @@ export class ParserService {
 
       const response = await got.get(
         'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
+        {
+          timeout: {
+            request: 10000,
+          },
+        },
       );
 
       const streets = await this.streetService.findAll();
@@ -128,7 +131,12 @@ export class ParserService {
     try {
       this.logger.log(`Start parse apartament ${href}`);
 
-      const response = await got.get(href);
+      const response = await got.get(href, {
+        timeout: {
+          request: 10000,
+        },
+      });
+
       const $ = cheerio.load(response.body);
 
       const isDeleted = !!$('title-info-title-text').html();
