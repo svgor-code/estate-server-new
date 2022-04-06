@@ -225,10 +225,13 @@ export class ApartmentService {
       return streetHouses.some((streetHouse) => {
         const areaStreet = streetHouse.street.name;
         const areaHouses = streetHouse.houses.map((house) =>
-          house.toLowerCase(),
+          house?.toLowerCase(),
         );
 
-        if (areaStreet === street && areaHouses.includes(house.toLowerCase())) {
+        if (
+          areaStreet === street &&
+          areaHouses.includes(house?.toLowerCase() || '')
+        ) {
           return true;
         }
 
