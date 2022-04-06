@@ -1,4 +1,5 @@
 import got from 'got';
+import { HttpsProxyAgent } from 'hpagent';
 import cheerio from 'cheerio';
 // import scraper from 'scraperapi-sdk';
 import { Injectable, Logger } from '@nestjs/common';
@@ -27,16 +28,30 @@ export class ParserService {
     try {
       this.logger.log('avito catalog parser started');
 
-      // const response = await scraperClient.get(
-      //   'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
-      //   {
-      //     render: true,
-      //   },
-      // );
+      const responseProxy = await got.get(
+        'https://public.freeproxyapi.com/api/Proxy/Mini',
+      );
+
+      const proxyData = JSON.parse(responseProxy.body);
+      console.log(`http://${proxyData.host}:${proxyData.port}`);
 
       const response = await got.get(
-        'http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
+        'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
+        {
+          agent: {
+            http: new HttpsProxyAgent({
+              keepAlive: true,
+              keepAliveMsecs: 1000,
+              maxSockets: 256,
+              maxFreeSockets: 256,
+              scheduling: 'lifo',
+              proxy: `http://${proxyData.host}:${proxyData.port}`,
+            }),
+          },
+        },
       );
+
+      this.logger.log(response);
 
       const streets = await this.streetService.findAll();
 
@@ -89,6 +104,8 @@ export class ParserService {
           streets,
           address,
         );
+
+        this.logger.log(address, street);
 
         return {
           platformId,

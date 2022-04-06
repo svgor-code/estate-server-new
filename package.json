@@ -31,10 +31,12 @@
     "cheerio": "^1.0.0-rc.10",
     "fuse.js": "^6.5.3",
     "got": "^11.8.3",
+    "hpagent": "^0.1.2",
     "moment": "^2.29.1",
     "mongoose": "^6.2.5",
     "node-telegram-bot-api": "^0.56.0",
     "reflect-metadata": "^0.1.13",
+    "request-promise": "^4.2.6",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "scraperapi-sdk": "^1.0.6"
