@@ -37,21 +37,19 @@ export class ParserService {
 
       const response = await got.get(
         'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
-        {
-          agent: {
-            http: new HttpsProxyAgent({
-              keepAlive: true,
-              keepAliveMsecs: 1000,
-              maxSockets: 256,
-              maxFreeSockets: 256,
-              scheduling: 'lifo',
-              proxy: `http://${proxyData.host}:${proxyData.port}`,
-            }),
-          },
-        },
+        // {
+        //   agent: {
+        //     http: new HttpsProxyAgent({
+        //       keepAlive: true,
+        //       keepAliveMsecs: 1000,
+        //       maxSockets: 256,
+        //       maxFreeSockets: 256,
+        //       scheduling: 'lifo',
+        //       proxy: `http://${proxyData.host}:${proxyData.port}`,
+        //     }),
+        //   },
+        // },
       );
-
-      this.logger.log(response);
 
       const streets = await this.streetService.findAll();
 
@@ -105,7 +103,7 @@ export class ParserService {
           address,
         );
 
-        this.logger.log(address, street);
+        this.logger.log(`${address} - ${street}`);
 
         return {
           platformId,

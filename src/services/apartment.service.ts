@@ -217,11 +217,13 @@ export class ApartmentService {
   ): AreaResultType | undefined {
     const { house, street } = apartment;
 
+    console.log(`## ${street} - ${apartment.address}`);
+
     return areas.find((area) => {
       const { streetHouses } = area;
 
       return streetHouses.some((streetHouse) => {
-        const areaStreet = streetHouse.street.name.toLowerCase();
+        const areaStreet = streetHouse.street.name;
         const areaHouses = streetHouse.houses.map((house) =>
           house.toLowerCase(),
         );
