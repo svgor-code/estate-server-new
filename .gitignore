@@ -37,3 +37,5 @@ lerna-debug.log*
 # MongoDB
 /mongo
 /redis
+
+/src/123.ts
