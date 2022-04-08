@@ -49,11 +49,13 @@ export class ApartmentService {
 
     const existingApartaments = await this.apartmentModel.find();
 
-    const apartaments = this.findSuitableApartaments(
+    const apartaments = await this.findSuitableApartaments(
       areas,
       createApartmentDto.apartments,
       existingApartaments,
     );
+
+    this.logger.log(`new appartments ${apartments}`);
 
     await this.telegramService.sendNewApartmentsMessages(apartaments);
 
@@ -173,21 +175,25 @@ export class ApartmentService {
     }
   }
 
-  private findSuitableApartaments(
+  private async findSuitableApartaments(
     areas: AreaResultType[],
     apartaments: IApartment[],
     existingApartaments: (Apartment &
       Document<any, any, any> & {
         _id: any;
       })[],
-  ): IApartment[] {
-    return apartaments.reduce<IApartment[]>((acc, curr) => {
+  ): Promise<IApartment[]> {
+    return apartaments.reduce<Promise<IApartment[] | []>>(async (acc, curr) => {
       const existingApartment = existingApartaments.find(
         (item) => item.platformId === curr.platformId,
       );
 
       if (existingApartment) {
-        this.updateStreet({ id: existingApartment._id, street: curr.street });
+        await this.updateStreet({
+          id: existingApartment._id,
+          street: curr.street,
+        });
+
         return acc;
       }
 
@@ -198,7 +204,7 @@ export class ApartmentService {
       }
 
       return [
-        ...acc,
+        ...(await acc),
         {
           ...curr,
           area: area._id,
@@ -208,7 +214,7 @@ export class ApartmentService {
           createdAt: moment().toDate(),
         },
       ];
-    }, []);
+    }, new Promise(() => []));
   }
 
   private findSuitableArea(
