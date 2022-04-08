@@ -55,7 +55,7 @@ export class ApartmentService {
       existingApartaments,
     );
 
-    this.logger.log(`new appartments ${apartments}`);
+    this.logger.log(`new appartments ${apartaments}`);
 
     await this.telegramService.sendNewApartmentsMessages(apartaments);
 
