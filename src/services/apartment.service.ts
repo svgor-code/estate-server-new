@@ -55,7 +55,7 @@ export class ApartmentService {
       existingApartaments,
     );
 
-    await this.telegramService.addedApartmentsToQueue(apartaments);
+    await this.telegramService.sendNewApartmentsMessages(apartaments);
 
     const createdApartaments = await this.apartmentModel.insertMany(
       apartaments,

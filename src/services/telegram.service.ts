@@ -4,7 +4,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import { InjectQueue, Process, Processor } from '@nestjs/bull';
 import { IApartment } from 'src/interfaces/apartment.interface';
 
-@Processor('apartments-notification')
+// @Processor('apartments-notification')
 @Injectable()
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
@@ -17,43 +17,64 @@ export class TelegramService {
     private readonly apartmentsNotificationQueue: Queue<string>,
   ) {}
 
-  async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {
-    this.logger.log(
-      `Added [${apartments.length}] apartments to queue apartments-notification`,
+  //   async addedApartmentsToQueue(apartments: IApartment[]): Promise<void> {
+  //     this.logger.log(
+  //       `Added [${apartments.length}] apartments to queue apartments-notification`,
+  //     );
+
+  //     const queueJobs = apartments.map((apartment) => {
+  //       return {
+  //         name: 'apartments-notification',
+  //         data: this.getApartmentMessageTemplete(apartment),
+  //         opts: {
+  //           removeOnComplete: true,
+  //           removeOnFail: true,
+  //         },
+  //       };
+  //     });
+
+  //     await this.apartmentsNotificationQueue.addBulk(queueJobs);
+  //   }
+
+  // @Process('apartments-notification')
+  // async sendNewApartmentMessage(job: Job<string>): Promise<void> {
+  //   const message = await this.bot.sendMessage(
+  //     process.env.TG_CHAT_ID,
+  //     job.data,
+  //     {
+  //       parse_mode: 'HTML',
+  //     },
+  //   );
+
+  //   if (!message || !message.message_id) {
+  //     this.logger.error(`Message was not sent to ${process.env.TG_CHAT_ID}`);
+  //     await job.remove();
+  //     return;
+  //   }
+
+  //   this.logger.log(`New apartament was sent to bot`);
+  //   await job.remove();
+  // }
+
+  async sendNewApartmentsMessages(apartments: IApartment[]) {
+    await Promise.all(
+      apartments.map(async (apartment) => {
+        const message = await this.bot.sendMessage(
+          process.env.TG_CHAT_ID,
+          this.getApartmentMessageTemplete(apartment),
+          {
+            parse_mode: 'HTML',
+          },
+        );
+
+        // delay
+        await new Promise(() => {
+          setTimeout(() => null, 10);
+        });
+
+        return message;
+      }),
     );
-
-    const queueJobs = apartments.map((apartment) => {
-      return {
-        name: 'apartments-notification',
-        data: this.getApartmentMessageTemplete(apartment),
-        opts: {
-          removeOnComplete: true,
-          removeOnFail: true,
-        },
-      };
-    });
-
-    await this.apartmentsNotificationQueue.addBulk(queueJobs);
-  }
-
-  @Process('apartments-notification')
-  async sendNewApartmentMessage(job: Job<string>): Promise<void> {
-    const message = await this.bot.sendMessage(
-      process.env.TG_CHAT_ID,
-      job.data,
-      {
-        parse_mode: 'HTML',
-      },
-    );
-
-    if (!message || !message.message_id) {
-      this.logger.error(`Message was not sent to ${process.env.TG_CHAT_ID}`);
-      await job.remove();
-      return;
-    }
-
-    this.logger.log(`New apartament was sent to bot`);
-    await job.remove();
   }
 
   private getApartmentMessageTemplete(apartment: IApartment): string {

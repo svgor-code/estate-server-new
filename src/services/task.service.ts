@@ -35,13 +35,13 @@ export class TaskService {
   ) {}
 
   // every 2 minutes at 14 seconds
-  @Cron('14 */2 * * * *')
+  @Cron('14 */3 * * * *')
   handleCron() {
     this.parserService.parseAvitoCatalog();
   }
 
   // every 10 minutes at 10 seconds
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron('30 */10 * * * *')
   async generateCheckApartmentsList() {
     this.logger.log('start generate apartments list to check');
     const apartments = await this.apartmentModel.find({
@@ -87,7 +87,7 @@ export class TaskService {
   }
 
   // every 10 minutes at 23 seconds
-  @Cron('23 */10 * * *')
+  @Cron('40 */5 * * *')
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
