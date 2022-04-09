@@ -6,7 +6,7 @@ import { ParserService } from './parser.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Apartment, ApartmentDocument } from 'src/schemas/apartment.schema';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 
 /*
@@ -36,11 +36,11 @@ export class TaskService {
 
   // every 2 minutes at 14 seconds
   @Cron('14 */3 * * * *')
-  handleCron() {
+  startParseAvitoCatalog() {
     this.parserService.parseAvitoCatalog();
   }
 
-  // every 10 minutes at 10 seconds
+  // every 10 minutes at 30 seconds
   @Cron('30 */10 * * * *')
   async generateCheckApartmentsList() {
     this.logger.log('start generate apartments list to check');
@@ -49,7 +49,7 @@ export class TaskService {
         $ne: ApartmentStatusEnum.DELETED,
       },
       checkedAt: {
-        $lte: moment().subtract(1, 'hours').toDate(),
+        $lte: moment().subtract(3, 'hours').toDate(),
       },
     });
 
@@ -63,7 +63,8 @@ export class TaskService {
         data: apartment._id.toString(),
         opts: {
           removeOnComplete: true,
-          removeOnFail: true,
+          removeOnFail: false,
+          jobId: apartment._id.toString(),
         },
       };
     });
@@ -94,6 +95,7 @@ export class TaskService {
     const job = await this.apartmentsCheckerQueue.getNextJob();
 
     if (!job) {
+      this.logger.log('jobs not found');
       return;
     }
 

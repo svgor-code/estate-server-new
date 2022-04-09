@@ -1,7 +1,5 @@
 import got from 'got';
-import { HttpsProxyAgent } from 'hpagent';
 import cheerio from 'cheerio';
-// import scraper from 'scraperapi-sdk';
 import { Injectable, Logger } from '@nestjs/common';
 import {
   IApartment,
@@ -28,27 +26,8 @@ export class ParserService {
     try {
       this.logger.log('avito catalog parser started');
 
-      const responseProxy = await got.get(
-        'https://public.freeproxyapi.com/api/Proxy/Mini',
-      );
-
-      const proxyData = JSON.parse(responseProxy.body);
-      console.log(`http://${proxyData.host}:${proxyData.port}`);
-
       const response = await got.get(
         'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
-        // {
-        //   agent: {
-        //     http: new HttpsProxyAgent({
-        //       keepAlive: true,
-        //       keepAliveMsecs: 1000,
-        //       maxSockets: 256,
-        //       maxFreeSockets: 256,
-        //       scheduling: 'lifo',
-        //       proxy: `http://${proxyData.host}:${proxyData.port}`,
-        //     }),
-        //   },
-        // },
       );
 
       const streets = await this.streetService.findAll();
@@ -75,27 +54,15 @@ export class ParserService {
         );
 
         const address = $(item).find('[class*=geo-address-]').text();
-        // const street = address
-        //   .replace('ул.', '')
-        //   .replace('пр.', '')
-        //   .replace('пр-т', '')
-        //   .replace('б-р', '')
-        //   .split(',')[0]
-        //   .trim();
-
         const house = address.split(',')[1]?.trim();
-
         const square = Number.parseFloat(
           title.split(', ')[1].split(' ')[0].split(',').join('.'),
         );
-
         const roomsData = title.split(',')[0];
         const rooms = Number.parseInt(
           roomsData.includes('-к.') ? roomsData.split('-')[0] : roomsData,
         );
-
         const floor = Number.parseInt(title.split(', ')[2].split('/')[0]);
-
         const pricePerMeter = Math.floor(price / square);
 
         const street = this.apartmentService.getApartmentStreet(

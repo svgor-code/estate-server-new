@@ -41,23 +41,23 @@ export class ApartmentService {
     private readonly streetService: StreetService,
   ) {}
 
-  async create(createApartmentDto: CreateApartmentDto): Promise<Apartment[]> {
+  async create({
+    apartments: newApartments,
+  }: CreateApartmentDto): Promise<Apartment[]> {
     const areas = await this.areaModel
       .find()
       .populate({ path: 'streetHouses', populate: { path: 'street' } })
       .exec();
 
-    const existingApartaments = await this.apartmentModel.find();
+    const existingApartaments = await this.apartmentModel.find().exec();
 
-    const apartaments = await this.findSuitableApartaments(
+    const apartaments = this.filterNewApartaments(
       areas,
-      createApartmentDto.apartments,
+      newApartments,
       existingApartaments,
     );
 
-    this.logger.log(`new appartments ${apartaments}`);
-
-    await this.telegramService.sendNewApartmentsMessages(apartaments);
+    await this.telegramService.addedApartmentsToQueue(apartaments);
 
     const createdApartaments = await this.apartmentModel.insertMany(
       apartaments,
@@ -175,36 +175,31 @@ export class ApartmentService {
     }
   }
 
-  private async findSuitableApartaments(
+  private filterNewApartaments(
     areas: AreaResultType[],
     apartaments: IApartment[],
     existingApartaments: (Apartment &
       Document<any, any, any> & {
         _id: any;
       })[],
-  ): Promise<IApartment[]> {
-    return apartaments.reduce<Promise<IApartment[] | []>>(async (acc, curr) => {
-      const existingApartment = existingApartaments.find(
+  ): IApartment[] {
+    return apartaments.reduce<IApartment[]>((acc, curr) => {
+      const isApartmentExist = existingApartaments.some(
         (item) => item.platformId === curr.platformId,
       );
 
-      if (existingApartment) {
-        await this.updateStreet({
-          id: existingApartment._id,
-          street: curr.street,
-        });
-
+      if (isApartmentExist) {
         return acc;
       }
 
-      const area = this.findSuitableArea(areas, curr);
+      const area = this.findApartmentArea(areas, curr);
 
       if (!area) {
         return acc;
       }
 
       return [
-        ...(await acc),
+        ...acc,
         {
           ...curr,
           area: area._id,
@@ -214,16 +209,14 @@ export class ApartmentService {
           createdAt: moment().toDate(),
         },
       ];
-    }, new Promise(() => []));
+    }, []);
   }
 
-  private findSuitableArea(
+  private findApartmentArea(
     areas: AreaResultType[],
     apartment: IApartment,
   ): AreaResultType | undefined {
     const { house, street } = apartment;
-
-    console.log(`## ${street} - ${apartment.address}`);
 
     return areas.find((area) => {
       const { streetHouses } = area;
@@ -236,7 +229,7 @@ export class ApartmentService {
 
         if (
           areaStreet === street &&
-          areaHouses.includes(house?.toLowerCase() || '')
+          areaHouses.includes(house?.toLowerCase())
         ) {
           return true;
         }
