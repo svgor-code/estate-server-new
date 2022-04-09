@@ -63,7 +63,7 @@ export class TaskService {
         data: apartment._id.toString(),
         opts: {
           removeOnComplete: true,
-          removeOnFail: false,
+          removeOnFail: true,
           jobId: apartment._id.toString(),
         },
       };

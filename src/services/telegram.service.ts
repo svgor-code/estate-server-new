@@ -34,7 +34,7 @@ export class TelegramService {
         data: this.getApartmentMessageTemplete(apartment),
         opts: {
           removeOnComplete: true,
-          removeOnFail: false,
+          removeOnFail: true,
           jobId: apartment.platformId,
           delay: 300,
         },
