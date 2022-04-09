@@ -25,6 +25,14 @@ export class ApartmentStateService {
     return createdApartmentState.save();
   }
 
+  async updateOrder(id: string, order: number): Promise<ApartmentState> {
+    return await this.apartmentStateModel.findByIdAndUpdate(id, {
+      $set: {
+        order,
+      },
+    });
+  }
+
   async findAll(): Promise<ApartmentState[]> {
     return this.apartmentStateModel.find().exec();
   }

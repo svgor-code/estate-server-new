@@ -7,6 +7,9 @@ export type ApartmentStateDocument = ApartmentState & Document;
 export class ApartmentState {
   @Prop({ type: String, required: true })
   name: string;
+
+  @Prop({ type: Number, required: false, default: 0 })
+  order: number;
 }
 
 export const ApartmentStateSchema =

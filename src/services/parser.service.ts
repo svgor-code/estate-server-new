@@ -8,7 +8,6 @@ import {
 import { ApartmentService } from './apartment.service';
 import { StreetService } from './street.service';
 
-// const scraperClient = scraper('b8a0d6d4b7886ffa3f7d1a998090228e');
 @Injectable()
 export class ParserService {
   private readonly logger = new Logger(ParserService.name);

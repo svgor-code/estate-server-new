@@ -24,12 +24,12 @@ export class ApartmentController {
   }
 
   @Get('update-steet-search')
-  async updateStreet(): Promise<Apartment[]> {
+  async updateStreetSearch(): Promise<Apartment[]> {
     return this.apartmentService.updateStreetsSearch();
   }
 
   @Put('change-state/:id')
-  async update(
+  async updateState(
     @Param('id') id: string,
     @Body() body: { state: string },
   ): Promise<Apartment> {
