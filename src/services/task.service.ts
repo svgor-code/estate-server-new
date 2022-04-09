@@ -69,24 +69,10 @@ export class TaskService {
       };
     });
 
-    const currentJobs = await this.apartmentsCheckerQueue.getJobs([
-      'active',
-      'completed',
-      'delayed',
-      'failed',
-      'paused',
-      'waiting',
-    ]);
-
-    const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
-    const newJobs = queueJobs.filter((job: any) => {
-      return !currentApartmentsIdsInQueue.includes(job.data);
-    });
-
-    await this.apartmentsCheckerQueue.addBulk(newJobs);
+    await this.apartmentsCheckerQueue.addBulk(queueJobs);
 
     this.logger.log(
-      `[${newJobs.length}] apartments was added to apartments-checker queue`,
+      `[${queueJobs.length}] apartments was added to apartments-checker queue`,
     );
   }
 
