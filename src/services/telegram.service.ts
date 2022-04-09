@@ -57,15 +57,13 @@ export class TelegramService {
     if (!message || !message.message_id) {
       this.logger.error(`Message was not sent to ${process.env.TG_CHAT_ID}`);
 
-      await job.moveToFailed({
-        message: `Message ${job.data} was not sent to ${process.env.TG_CHAT_ID}`,
-      });
+      await job.remove();
 
       return;
     }
 
     this.logger.log(`New apartament was sent to bot`);
-    await job.moveToCompleted();
+    await job.remove();
   }
 
   private getApartmentMessageTemplete(apartment: IApartment): string {

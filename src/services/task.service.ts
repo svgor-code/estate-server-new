@@ -105,7 +105,7 @@ export class TaskService {
     const apartment = await this.apartmentModel.findById(job.data);
 
     if (!apartment || !apartment.href) {
-      return await job.moveToCompleted();
+      return await job.remove();
     }
 
     const result = await this.parserService.parseAvitoItem(
@@ -114,11 +114,9 @@ export class TaskService {
     );
 
     if (result.success) {
-      return await job.moveToCompleted();
+      return await job.remove();
     }
 
-    return await job.moveToFailed({
-      message: result.error.message,
-    });
+    return await job.remove();
   }
 }
