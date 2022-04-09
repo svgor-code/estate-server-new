@@ -7,6 +7,7 @@ import {
   ApartmentStateDocument,
 } from 'src/schemas/apartmentState.schema';
 import { CreateApartmentStateDto } from 'src/dto/apartmentState/CreateApartmentStateDto';
+import { UpdateApartmentStateDto } from 'src/dto/apartmentState/UpdateApartmentStateDto';
 
 @Injectable()
 export class ApartmentStateService {
@@ -25,12 +26,24 @@ export class ApartmentStateService {
     return createdApartmentState.save();
   }
 
-  async updateOrder(id: string, order: number): Promise<ApartmentState> {
-    return await this.apartmentStateModel.findByIdAndUpdate(id, {
-      $set: {
-        order,
-      },
-    });
+  async bulkUpdate(
+    updateApartmentStateDto: UpdateApartmentStateDto[],
+  ): Promise<ApartmentState[]> {
+    return await Promise.all(
+      updateApartmentStateDto.map(async (apartmentState) => {
+        return await this.apartmentStateModel.findByIdAndUpdate(
+          apartmentState._id,
+          {
+            $set: {
+              order: apartmentState.order,
+            },
+          },
+          {
+            new: true,
+          },
+        );
+      }),
+    );
   }
 
   async findAll(): Promise<ApartmentState[]> {

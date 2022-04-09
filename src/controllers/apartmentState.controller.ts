@@ -11,7 +11,7 @@ import {
 import { CreateApartmentStateDto } from 'src/dto/apartmentState/CreateApartmentStateDto';
 import { ApartmentState } from 'src/schemas/apartmentState.schema';
 import { ApartmentStateService } from 'src/services/apartmentState.service';
-import { UpdateApartmentStateOrderDto } from 'src/dto/apartmentState/UpdateApartmentStateOrderDto';
+import { UpdateApartmentStateDto } from 'src/dto/apartmentState/UpdateApartmentStateDto';
 
 @Controller('apartment-state')
 export class ApartmentStateController {
@@ -29,12 +29,11 @@ export class ApartmentStateController {
     return this.apartmentStateService.findAll();
   }
 
-  @Put('/order/:id')
-  async updateOrder(
-    @Param(':id') id: string,
-    @Body() { order }: UpdateApartmentStateOrderDto,
-  ): Promise<ApartmentState> {
-    return this.apartmentStateService.updateOrder(id, order);
+  @Put('/update-bulk')
+  async bulkUpdate(
+    @Body() updateApartmentStateDto: UpdateApartmentStateDto[],
+  ): Promise<ApartmentState[]> {
+    return this.apartmentStateService.bulkUpdate(updateApartmentStateDto);
   }
 
   @Delete(':id')
