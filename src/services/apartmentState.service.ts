@@ -47,7 +47,9 @@ export class ApartmentStateService {
   }
 
   async findAll(): Promise<ApartmentState[]> {
-    return this.apartmentStateModel.find().exec();
+    return (await this.apartmentStateModel.find().exec()).sort(
+      (a, b) => a.order - b.order,
+    );
   }
 
   async delete(id: string): Promise<mongodb.DeleteResult> {
