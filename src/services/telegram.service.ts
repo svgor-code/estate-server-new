@@ -44,7 +44,7 @@ export class TelegramService {
     await this.apartmentsNotificationQueue.addBulk(queueJobs);
   }
 
-  @Process()
+  @Process('apartments-notification')
   async sendNewApartmentMessage(job: Job<string>): Promise<void> {
     const message = await this.bot.sendMessage(
       process.env.TG_CHAT_ID,

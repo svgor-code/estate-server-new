@@ -79,11 +79,14 @@ export class TaskService {
     ]);
 
     const currentApartmentsIdsInQueue = currentJobs.map((job) => job.data);
+    const newJobs = queueJobs.filter((job: any) => {
+      return !currentApartmentsIdsInQueue.includes(job.data);
+    });
 
-    await this.apartmentsCheckerQueue.addBulk(
-      queueJobs.filter((job: any) => {
-        return !currentApartmentsIdsInQueue.includes(job.data);
-      }),
+    await this.apartmentsCheckerQueue.addBulk(newJobs);
+
+    this.logger.log(
+      `[${newJobs.length}] apartments was added to apartments-checker queue`,
     );
   }
 
