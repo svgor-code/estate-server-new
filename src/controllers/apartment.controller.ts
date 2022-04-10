@@ -1,26 +1,25 @@
 import mongodb from 'mongodb';
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
-import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  Query,
+} from '@nestjs/common';
+
 import { Apartment } from 'src/schemas/apartment.schema';
 import { ApartmentService } from 'src/services/apartment.service';
+import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
 
 @Controller('apartments')
 export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
-  @Get('active')
-  async findActiveAll(): Promise<Apartment[]> {
-    return this.apartmentService.findAll(ApartmentStatusEnum.PUBLISHED);
-  }
-
-  @Get('inactive')
-  async findInactiveAll(): Promise<Apartment[]> {
-    return this.apartmentService.findAll(ApartmentStatusEnum.CLOSED);
-  }
-
-  @Get('removed')
-  async findRemovedAll(): Promise<Apartment[]> {
-    return this.apartmentService.findAll(ApartmentStatusEnum.DELETED);
+  @Get()
+  async findAll(@Query() query: GetApartmentDto): Promise<Apartment[]> {
+    return this.apartmentService.findAll(query);
   }
 
   @Get('update-steet-search')

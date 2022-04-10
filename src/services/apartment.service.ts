@@ -16,6 +16,7 @@ import moment from 'moment';
 import { StreetService } from './street.service';
 import { IStreet } from 'src/interfaces/street.interface';
 import Fuse from 'fuse.js';
+import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
@@ -66,9 +67,9 @@ export class ApartmentService {
     return createdApartaments;
   }
 
-  async findAll(status: ApartmentStatusEnum): Promise<Apartment[]> {
+  async findAll(query: GetApartmentDto): Promise<Apartment[]> {
     return await this.apartmentModel
-      .find({ status })
+      .find(query)
       .populate({ path: 'area' })
       .populate({ path: 'state' })
       .sort({ createdAt: 'desc' })
