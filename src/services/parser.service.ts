@@ -123,16 +123,13 @@ export class ParserService {
     try {
       this.logger.log(`Start parse apartament ${href}`);
 
-      const response = await got.get(
-        `http://api.scraperapi.com/?api_key=b8a0d6d4b7886ffa3f7d1a998090228e&url=${href}`,
-        {
-          http2: true,
-          headers: {
-            'user-agent':
-              'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36',
-          },
+      const response = await got.get(href, {
+        http2: true,
+        headers: {
+          'user-agent':
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36',
         },
-      );
+      });
 
       const $ = cheerio.load(response.body);
 
