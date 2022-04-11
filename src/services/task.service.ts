@@ -34,7 +34,6 @@ export class TaskService {
     private readonly apartmentsCheckerQueue: Queue<string>,
   ) {}
 
-  // every 2 minutes at 14 seconds
   @Cron('10 * * * * *')
   startParseAvitoCatalog() {
     this.parserService.parseAvitoCatalog();
@@ -49,7 +48,7 @@ export class TaskService {
         $ne: ApartmentStatusEnum.DELETED,
       },
       checkedAt: {
-        $lte: moment().subtract(3, 'hours').toDate(),
+        $lte: moment().subtract(1, 'day').toDate(),
       },
     });
 
