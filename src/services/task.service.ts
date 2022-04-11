@@ -77,7 +77,7 @@ export class TaskService {
   }
 
   // every 10 minutes at 23 seconds
-  @Cron('40 * * * *')
+  @Cron('40 * * * * *')
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
