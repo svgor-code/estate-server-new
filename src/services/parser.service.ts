@@ -76,7 +76,7 @@ export class ParserService {
           address,
         );
 
-        this.logger.log(`${address} - ${street}`);
+        // this.logger.log(`${address} - ${street}`);
 
         return {
           platformId,
