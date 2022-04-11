@@ -104,7 +104,9 @@ export class TaskService {
     );
 
     if (result.success) {
-      await job.moveToCompleted();
+      await job.moveToFailed({
+        message: 'done',
+      });
       return await job.remove();
     }
 
