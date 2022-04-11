@@ -91,6 +91,9 @@ export class TaskService {
     const apartment = await this.apartmentModel.findById(job.data);
 
     if (!apartment || !apartment.href) {
+      await job.moveToFailed({
+        message: 'Apartment not found',
+      });
       return await job.remove();
     }
 
@@ -100,9 +103,13 @@ export class TaskService {
     );
 
     if (result.success) {
+      await job.moveToCompleted();
       return await job.remove();
     }
 
+    await job.moveToFailed({
+      message: result.error.message,
+    });
     return await job.remove();
   }
 }
