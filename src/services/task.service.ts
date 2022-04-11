@@ -80,7 +80,9 @@ export class TaskService {
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
-    const job = await this.apartmentsCheckerQueue.getNextJob();
+    const job =
+      (await this.apartmentsCheckerQueue.getActive()[0]) ||
+      (await this.apartmentsCheckerQueue.getNextJob());
 
     if (!job) {
       this.logger.log('jobs not found');
