@@ -1,5 +1,5 @@
 import moment from 'moment';
-import Bull, { Queue } from 'bull';
+import Bull, { Job, Queue } from 'bull';
 import { Model } from 'mongoose';
 import { InjectQueue } from '@nestjs/bull';
 import { ParserService } from './parser.service';
@@ -80,7 +80,7 @@ export class TaskService {
   async checkApartmentsStatus() {
     this.logger.log('start check apartment status');
 
-    const job =
+    const job: Job =
       (await this.apartmentsCheckerQueue.getActive()[0]) ||
       (await this.apartmentsCheckerQueue.getNextJob());
 
@@ -92,9 +92,9 @@ export class TaskService {
     const apartment = await this.apartmentModel.findById(job.data);
 
     if (!apartment || !apartment.href) {
-      // await job.moveToFailed({
-      //   message: 'Apartment not found',
-      // });
+      await job.moveToFailed({
+        message: 'Apartment not found',
+      });
       return await job.remove();
     }
 
@@ -104,13 +104,13 @@ export class TaskService {
     );
 
     if (result.success) {
-      // await job.moveToCompleted();
+      await job.moveToCompleted();
       return await job.remove();
     }
 
-    // await job.moveToFailed({
-    //   message: result.error.message,
-    // });
+    await job.moveToFailed({
+      message: result.error.message,
+    });
     return await job.remove();
   }
 }
