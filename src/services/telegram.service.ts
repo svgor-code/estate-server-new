@@ -11,7 +11,7 @@ type QueueJob = {
 };
 
 @Injectable()
-@Processor('apartments-notification')
+// @Processor('apartments-notification')
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
   private readonly bot = new TelegramBot(process.env.TG_TOKEN, {
@@ -44,7 +44,7 @@ export class TelegramService {
     await this.apartmentsNotificationQueue.addBulk(queueJobs);
   }
 
-  @Process('apartments-notification')
+  // @Process('apartments-notification')
   async sendNewApartmentMessage(job: Job<string>): Promise<void> {
     const message = await this.bot.sendMessage(
       process.env.TG_CHAT_ID,
