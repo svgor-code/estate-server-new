@@ -66,7 +66,9 @@ export class ParserService {
         );
         const roomsData = title.split(',')[0];
         const rooms = Number.parseInt(
-          roomsData.includes('-к.') ? roomsData.split('-')[0] : roomsData,
+          roomsData.includes('-к.')
+            ? roomsData.split('-')[0]
+            : roomsData || '1',
         );
         const floor = Number.parseInt(title.split(', ')[2].split('/')[0]);
         const pricePerMeter = Math.floor(price / square);
