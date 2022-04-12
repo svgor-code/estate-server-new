@@ -253,7 +253,7 @@ export class ApartmentService {
     }
 
     if (status === ApartmentStatusEnum.CLOSED) {
-      if (checkCounter >= 12) {
+      if (checkCounter >= 3) {
         return {
           status: ApartmentStatusEnum.DELETED,
           checkCounter,
