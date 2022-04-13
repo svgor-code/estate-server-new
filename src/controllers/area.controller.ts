@@ -7,19 +7,27 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import mongodb from 'mongodb';
+import { Area } from 'src/schemas/area.schema';
 import { CreateAreaDto } from 'src/dto/area/CreateAreaDto';
 import { UpdateAreaDto } from 'src/dto/area/UpdateAreaDto';
-import { Area } from 'src/schemas/area.schema';
 import { AreaService } from 'src/services/area.service';
-import mongodb from 'mongodb';
+import { ApartmentService } from 'src/services/apartment.service';
 
 @Controller('areas')
 export class AreaController {
-  constructor(private areaService: AreaService) {}
+  constructor(
+    private areaService: AreaService,
+    private apartmentService: ApartmentService,
+  ) {}
 
   @Post()
   async create(@Body() createAreaDto: CreateAreaDto): Promise<Area> {
-    return this.areaService.create(createAreaDto);
+    const newArea = await this.areaService.create(createAreaDto);
+
+    await this.apartmentService.addNewAreaToApartments(newArea._id.toString());
+
+    return newArea;
   }
 
   @Put(':id')

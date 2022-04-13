@@ -43,7 +43,12 @@ export class Apartment {
   @Prop({ type: Number })
   floor: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Area', required: true })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Area',
+    required: true,
+    default: null,
+  })
   area: Area;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ApartmentState' })

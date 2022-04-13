@@ -67,7 +67,12 @@ export class ApartmentService {
     return createdApartaments;
   }
 
-  async findAll(query: GetApartmentDto): Promise<Apartment[]> {
+  async findAll(query: GetApartmentDto): Promise<
+    (Apartment &
+      Document<any, any, any> & {
+        _id: any;
+      })[]
+  > {
     return await this.apartmentModel
       .find(query)
       .populate({ path: 'area' })
@@ -149,10 +154,48 @@ export class ApartmentService {
     return updatedApartments;
   }
 
+  async updateArea(id: string, areaId: string | null): Promise<Apartment> {
+    return await this.apartmentModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          area: areaId,
+        },
+      },
+      {
+        new: true,
+      },
+    );
+  }
+
   async delete(id: string): Promise<mongodb.DeleteResult> {
     return await this.apartmentModel.deleteOne({
       _id: id,
     });
+  }
+
+  async addNewAreaToApartments(areaId: string): Promise<void> {
+    const area = await this.areaModel
+      .findById(areaId)
+      .populate({ path: 'streetHouses', populate: { path: 'street' } })
+      .exec();
+
+    const apartmentsWithoutArea = await this.apartmentModel.find({
+      area: null,
+    });
+
+    const compatibilityApartments = apartmentsWithoutArea.filter((apartment) =>
+      this.findApartmentArea([area], {
+        house: apartment.house,
+        street: apartment.street,
+      }),
+    );
+
+    await Promise.all(
+      compatibilityApartments.map(async (apartment) => {
+        return await this.updateArea(apartment.id, areaId.toString());
+      }),
+    );
   }
 
   getApartmentStreet(streets: IStreet[], address: string) {
@@ -215,7 +258,7 @@ export class ApartmentService {
 
   private findApartmentArea(
     areas: AreaResultType[],
-    apartment: IApartment,
+    apartment: Partial<IApartment>,
   ): AreaResultType | undefined {
     const { house, street } = apartment;
 

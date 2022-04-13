@@ -1,5 +1,6 @@
 import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
 
 export class GetApartmentDto {
-  status: ApartmentStatusEnum;
+  status?: ApartmentStatusEnum;
+  area?: string;
 }

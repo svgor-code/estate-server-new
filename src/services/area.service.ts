@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Document } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Area, AreaDocument } from 'src/schemas/area.schema';
@@ -10,6 +10,7 @@ import {
 import { UpdateAreaDto } from 'src/dto/area/UpdateAreaDto';
 import { CreateStreetHouseDto } from 'src/dto/streetHouse/CreateStreetHouseDto';
 import mongodb from 'mongodb';
+import { ApartmentService } from './apartment.service';
 
 @Injectable()
 export class AreaService {
@@ -17,9 +18,15 @@ export class AreaService {
     @InjectModel(Area.name) private areaModel: Model<AreaDocument>,
     @InjectModel(StreetHouse.name)
     private streetHouseModel: Model<StreetHouseDocument>,
+    private apartmentService: ApartmentService,
   ) {}
 
-  async create(createAreaDto: CreateAreaDto): Promise<Area> {
+  async create(createAreaDto: CreateAreaDto): Promise<
+    Area &
+      Document<any, any, any> & {
+        _id: any;
+      }
+  > {
     const { streetHouses } = createAreaDto;
 
     const savedStreetHouses = await this.createStreetHouses(streetHouses);
@@ -72,6 +79,16 @@ export class AreaService {
 
   async delete(id: string): Promise<mongodb.DeleteResult> {
     await this.removeStreetHouses(id);
+
+    const linkedApartments = await this.apartmentService.findAll({
+      area: id,
+    });
+
+    await Promise.all(
+      linkedApartments.map(async (apartment) => {
+        await this.apartmentService.updateArea(apartment._id, null);
+      }),
+    );
 
     return await this.areaModel.deleteOne({
       _id: id,
