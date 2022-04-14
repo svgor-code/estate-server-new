@@ -236,7 +236,7 @@ export class ApartmentService {
         return acc;
       }
 
-      if (curr.price < 200000) {
+      if (curr.price < 100000) {
         return acc;
       }
 
