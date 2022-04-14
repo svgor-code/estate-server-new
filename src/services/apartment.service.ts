@@ -236,6 +236,10 @@ export class ApartmentService {
         return acc;
       }
 
+      if (curr.price < 200000) {
+        return acc;
+      }
+
       const area = this.findApartmentArea(areas, curr);
 
       if (!area) {
