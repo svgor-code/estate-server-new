@@ -2,7 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import moment from 'moment';
 import mongoose from 'mongoose';
 import { Document } from 'mongoose';
-import { ApartmentStatusEnum } from 'src/interfaces/apartment.interface';
+import {
+  ApartmentRingStatusEnum,
+  ApartmentStatusEnum,
+} from 'src/interfaces/apartment.interface';
 import { ApartmentState } from './apartmentState.schema';
 import { Area } from './area.schema';
 
@@ -60,6 +63,13 @@ export class Apartment {
     required: true,
   })
   status: ApartmentStatusEnum;
+
+  @Prop({
+    type: String,
+    enum: ApartmentRingStatusEnum,
+    required: false,
+  })
+  ringStatus: ApartmentRingStatusEnum;
 
   @Prop({ type: Number })
   checkCounter: number;

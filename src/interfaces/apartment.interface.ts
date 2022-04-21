@@ -4,6 +4,13 @@ export enum ApartmentStatusEnum {
   DELETED = 'deleted',
 }
 
+export enum ApartmentRingStatusEnum {
+  SUCCESS = 'success',
+  IN_PROGRESS = 'in_progress',
+  FAIL = 'fail',
+  FAKE = 'fake',
+}
+
 export interface IApartment {
   platformId: string;
   title: string;

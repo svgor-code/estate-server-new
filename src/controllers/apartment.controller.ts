@@ -12,6 +12,7 @@ import {
 import { Apartment } from 'src/schemas/apartment.schema';
 import { ApartmentService } from 'src/services/apartment.service';
 import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
+import { ApartmentRingStatusEnum } from 'src/interfaces/apartment.interface';
 
 @Controller('apartments')
 export class ApartmentController {
@@ -33,6 +34,28 @@ export class ApartmentController {
     @Body() body: { state: string },
   ): Promise<Apartment> {
     return this.apartmentService.updateState({ id, state: body.state });
+  }
+
+  @Put('change-ring-status/:id')
+  async updateRingStatus(
+    @Param('id') id: string,
+    @Body() body: { ringStatus: ApartmentRingStatusEnum },
+  ): Promise<Apartment> {
+    return this.apartmentService.updateRingStatus({
+      id,
+      ringStatus: body.ringStatus,
+    });
+  }
+
+  @Put('update-price/:id')
+  async updatePrice(
+    @Param('id') id: string,
+    @Body() body: { price: number },
+  ): Promise<Apartment> {
+    return this.apartmentService.updatePrice({
+      id,
+      price: body.price,
+    });
   }
 
   @Delete(':id')

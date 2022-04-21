@@ -17,6 +17,8 @@ import { StreetService } from './street.service';
 import { IStreet } from 'src/interfaces/street.interface';
 import Fuse from 'fuse.js';
 import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
+import { UpdateApartmentRingStatusDto } from 'src/dto/apartment/UpdateApartmentRingStatusDto';
+import { UpdateApartmentPriceDto } from 'src/dto/apartment/UpdateApartmentPriceDto';
 
 type AreaResultType = Area &
   Document<any, any, any> & {
@@ -120,6 +122,33 @@ export class ApartmentService {
     return await this.apartmentModel.findByIdAndUpdate(id, {
       $set: {
         state,
+      },
+    });
+  }
+
+  async updatePrice({
+    id,
+    price,
+  }: UpdateApartmentPriceDto): Promise<Apartment> {
+    const { square } = await this.apartmentModel.findById(id).exec();
+
+    const pricePerMeter = price / square;
+
+    return await this.apartmentModel.findByIdAndUpdate(id, {
+      $set: {
+        price,
+        pricePerMeter,
+      },
+    });
+  }
+
+  async updateRingStatus({
+    id,
+    ringStatus,
+  }: UpdateApartmentRingStatusDto): Promise<Apartment> {
+    return await this.apartmentModel.findByIdAndUpdate(id, {
+      $set: {
+        ringStatus,
       },
     });
   }
