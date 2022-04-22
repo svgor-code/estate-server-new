@@ -25,6 +25,7 @@ export interface IApartment {
   floor?: number;
   area?: string;
   status?: ApartmentStatusEnum;
+  ringStatus?: ApartmentRingStatusEnum;
   checkCounter?: number;
   checkedAt?: Date;
   createdAt?: Date;

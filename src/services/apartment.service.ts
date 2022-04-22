@@ -132,7 +132,7 @@ export class ApartmentService {
   }: UpdateApartmentPriceDto): Promise<Apartment> {
     const { square } = await this.apartmentModel.findById(id).exec();
 
-    const pricePerMeter = price / square;
+    const pricePerMeter = Math.floor(price / square);
 
     return await this.apartmentModel.findByIdAndUpdate(id, {
       $set: {
@@ -299,7 +299,7 @@ export class ApartmentService {
       const { streetHouses } = area;
 
       return streetHouses.some((streetHouse) => {
-        const areaStreet = streetHouse.street.name;
+        const areaStreet = streetHouse.street?.name;
         const areaHouses = streetHouse.houses.map((house) =>
           house?.toLowerCase(),
         );
