@@ -9,6 +9,7 @@ export enum ApartmentRingStatusEnum {
   IN_PROGRESS = 'in_progress',
   FAIL = 'fail',
   FAKE = 'fake',
+  CONFIRMED = 'confirmed',
 }
 
 export interface IApartment {
