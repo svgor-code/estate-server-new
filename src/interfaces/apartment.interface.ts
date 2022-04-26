@@ -1,3 +1,7 @@
+import { Document } from 'mongoose';
+import { Apartment } from 'src/schemas/apartment.schema';
+import { Area } from 'src/schemas/area.schema';
+
 export enum ApartmentStatusEnum {
   PUBLISHED = 'published',
   CLOSED = 'closed',
@@ -33,3 +37,24 @@ export interface IApartment {
   createdAt?: Date;
   closedAt?: Date;
 }
+
+export type AreaResultType = Area &
+  Document<any, any, any> & {
+    _id: any;
+  };
+
+export type ApartmentResultType = Apartment &
+  Document<any, any, any> & {
+    _id: any;
+  };
+
+export type ApartmentFindWrapper = {
+  items: ApartmentResultType[];
+  count: number;
+};
+
+export type ApartmentUpdateStatusType = {
+  status: ApartmentStatusEnum;
+  checkCounter: number;
+  closedAt?: Date;
+};

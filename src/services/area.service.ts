@@ -80,7 +80,7 @@ export class AreaService {
   async delete(id: string): Promise<mongodb.DeleteResult> {
     await this.removeStreetHouses(id);
 
-    const linkedApartments = await this.apartmentService.findAll({
+    const { items: linkedApartments } = await this.apartmentService.findAll({
       area: id,
     });
 

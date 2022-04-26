@@ -6,7 +6,10 @@ import { Apartment, ApartmentDocument } from 'src/schemas/apartment.schema';
 import { Area, AreaDocument } from 'src/schemas/area.schema';
 import { CreateApartmentDto } from 'src/dto/apartment/CreateApartmentDto';
 import {
+  ApartmentFindWrapper,
   ApartmentStatusEnum,
+  ApartmentUpdateStatusType,
+  AreaResultType,
   IApartment,
 } from 'src/interfaces/apartment.interface';
 import { UpdateApartmentStateDto } from 'src/dto/apartment/UpdateApartmentStateDto';
@@ -19,17 +22,6 @@ import Fuse from 'fuse.js';
 import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
 import { UpdateApartmentRingStatusDto } from 'src/dto/apartment/UpdateApartmentRingStatusDto';
 import { UpdateApartmentPriceDto } from 'src/dto/apartment/UpdateApartmentPriceDto';
-
-type AreaResultType = Area &
-  Document<any, any, any> & {
-    _id: any;
-  };
-
-type ApartmentUpdateStatusType = {
-  status: ApartmentStatusEnum;
-  checkCounter: number;
-  closedAt?: Date;
-};
 
 @Injectable()
 export class ApartmentService {
@@ -69,18 +61,31 @@ export class ApartmentService {
     return createdApartaments;
   }
 
-  async findAll(query: GetApartmentDto): Promise<
-    (Apartment &
-      Document<any, any, any> & {
-        _id: any;
-      })[]
-  > {
-    return await this.apartmentModel
+  async findAll(query: GetApartmentDto): Promise<ApartmentFindWrapper> {
+    const { offset = 0, limit } = query;
+
+    delete query.offset;
+    delete query.limit;
+
+    const dbApartmentsQuery = this.apartmentModel
       .find(query)
+      .skip(offset)
       .populate({ path: 'area' })
       .populate({ path: 'state' })
-      .sort({ createdAt: 'desc' })
-      .exec();
+      .sort({ createdAt: 'desc' });
+
+    const count = await this.apartmentModel.count(query).exec();
+
+    if (limit) {
+      dbApartmentsQuery.limit(limit);
+    }
+
+    const items = await dbApartmentsQuery.exec();
+
+    return {
+      items,
+      count,
+    };
   }
 
   async getById(id: string): Promise<Apartment> {

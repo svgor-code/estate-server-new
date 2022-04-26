@@ -12,14 +12,19 @@ import {
 import { Apartment } from 'src/schemas/apartment.schema';
 import { ApartmentService } from 'src/services/apartment.service';
 import { GetApartmentDto } from 'src/dto/apartment/GetApartmentDto';
-import { ApartmentRingStatusEnum } from 'src/interfaces/apartment.interface';
+import {
+  ApartmentFindWrapper,
+  ApartmentRingStatusEnum,
+} from 'src/interfaces/apartment.interface';
 
 @Controller('apartments')
 export class ApartmentController {
   constructor(private readonly apartmentService: ApartmentService) {}
 
   @Get()
-  async findAll(@Query() query: GetApartmentDto): Promise<Apartment[]> {
+  async findAll(
+    @Query() query: GetApartmentDto,
+  ): Promise<ApartmentFindWrapper> {
     return this.apartmentService.findAll(query);
   }
 
