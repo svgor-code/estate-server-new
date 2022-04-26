@@ -10,6 +10,7 @@ export enum ApartmentRingStatusEnum {
   FAIL = 'fail',
   FAKE = 'fake',
   CONFIRMED = 'confirmed',
+  UNCONFIRMED = 'unconfirmed',
 }
 
 export interface IApartment {
