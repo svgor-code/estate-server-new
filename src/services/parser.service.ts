@@ -93,7 +93,9 @@ export class ParserService {
         };
       });
 
-      const apartments = Array.from(items) || [];
+      const itemsToAdd = Array.from(items).filter((item) => item.price);
+
+      const apartments = itemsToAdd || [];
 
       await this.apartmentService.create({ apartments });
 
