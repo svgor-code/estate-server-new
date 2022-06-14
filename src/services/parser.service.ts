@@ -124,7 +124,7 @@ export class ParserService {
   }> {
     try {
       let replacedHref = href.replace('_m', 'm');
-      replacedHref = href.replace('_et.', 'et.');
+      replacedHref = replacedHref.replace('_et.', 'et.');
 
       this.logger.log(`Start parse apartament ${replacedHref}`);
 
