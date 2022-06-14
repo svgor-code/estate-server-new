@@ -123,9 +123,12 @@ export class ParserService {
     error?: Error;
   }> {
     try {
-      this.logger.log(`Start parse apartament ${href}`);
+      let replacedHref = href.replace('_m', 'm');
+      replacedHref = href.replace('_et.', 'et.');
 
-      const response = await got.get(href, {
+      this.logger.log(`Start parse apartament ${replacedHref}`);
+
+      const response = await got.get(replacedHref, {
         http2: true,
         headers: {
           'user-agent':
