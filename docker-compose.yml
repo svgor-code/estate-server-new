@@ -42,4 +42,4 @@ services:
     volumes:
       - ./redis/data:/data
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-      # - './redis:/var/lib/redis'
+      - ./redis/etc:/etc
