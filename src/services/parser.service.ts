@@ -28,7 +28,7 @@ export class ParserService {
       const response = await got.get(
         'https://www.avito.ru/ulyanovsk/kvartiry/prodam/vtorichka-ASgBAQICAUSSA8YQAUDmBxSMUg?s=104',
         {
-          http2: true,
+          http2: false,
           headers: {
             'user-agent':
               'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
